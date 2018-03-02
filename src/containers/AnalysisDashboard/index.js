@@ -10,7 +10,6 @@ export default class AnalysisDashboard extends Component {
     state={
         activeFilters: []
     }
-
     handleClick = (e) => {
         if (e.eventType === "select"){
             this.setState({
@@ -20,10 +19,8 @@ export default class AnalysisDashboard extends Component {
             this.setState({
                 activeFilters: this.state.activeFilters.filter(item => item[0]!==e.type)
             })
-        }
-            
+        }   
     }
-
     closeHandler = (e) => {
         let arr = this.state.activeFilters
         arr.splice(e,1)
@@ -36,12 +33,12 @@ export default class AnalysisDashboard extends Component {
         return (
             <div className="AnalysisDashboard">
                 <DataLoader>
-                        <FilterPopover 
-                            activeFilters={this.state.activeFilters.map(i=>i[2])} 
-                            closeHandler={this.closeHandler}/>
+                    <FilterPopover 
+                        activeFilters={this.state.activeFilters.map(i=>i[2])} 
+                        closeHandler={this.closeHandler}/>
                     <DataContext.Consumer>
                         { context =>
-                            <View actions={context.actions} data={context.data}/>
+                            <View actions={context.actions}/>
                         }
                     </DataContext.Consumer>
                 </DataLoader>

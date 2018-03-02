@@ -3,11 +3,9 @@ import {
   FormGroup,
   FormControl,
   ControlLabel,
-  PageHeader,
-  Grid, Row, Col
 } from "react-bootstrap";
 
-import { Card } from 'antd'
+import { Row, Col, Card, Icon } from 'antd'
 
 import LoaderButton from "../../components/LoaderButton";
 import "./MyProfile.css";
@@ -109,27 +107,29 @@ export default class MyProfile extends Component {
 
   renderUserInfo() {
     return (
-      <p>Nothing to display.</p>
+      "Nothing to display."
     );
   }
 
   render() {
     return (
       <div className="MyProfile container-fluid">
-        <Grid>
-          <PageHeader>My Profile</PageHeader>
-            <Row>
-              <Col xs={12} md={6}>
-                <Card title="Profile Information">{this.renderUserInfo()}</Card>
-                <Card title="Subscription Information">{this.renderUserInfo()}</Card>
-                <Card title="Billing Information">{this.renderUserInfo()}</Card>
-              </Col>
-              <Col xs={12} md={6}>
-                <Card title="Change Password">{this.renderForm()}</Card>
-              </Col>
-            </Row>
-        </Grid>
+        <Row gutter={16} style={{padding: 30}}>
+          <Col xs={24} md={12}>
+            <ContainerCard title="Profile Information" extra={<Icon type="idcard" />}>{this.renderUserInfo()}</ContainerCard>
+            <ContainerCard title="Subscription Information" extra={<Icon type="wallet" />}>{this.renderUserInfo()}</ContainerCard>
+            <ContainerCard title="Billing Information" extra={<Icon type="bank" />}>{this.renderUserInfo()}</ContainerCard>
+          </Col>
+          <Col xs={24} md={12}>
+            <ContainerCard title="Change Password" extra={<Icon type="lock" />}>{this.renderForm()}</ContainerCard>
+          </Col>
+        </Row>
       </div>
     );
   }
 }
+
+const ContainerCard = (props) => 
+  <Card title={props.title} extra={props.extra} style={{marginBottom: 16}}>
+    {props.children}
+  </Card>

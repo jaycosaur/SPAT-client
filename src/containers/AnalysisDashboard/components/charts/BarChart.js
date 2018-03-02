@@ -3,11 +3,7 @@ import ReactHighcharts from 'react-highcharts'
 
 export default class BarChart extends Component {
   render() {
-
-    let keys = Object.keys(this.props.data).map(key => key).sort((a,b) => this.props.data[b].sum - this.props.data[a].sum)
-    let values = keys.map(key => this.props.data[key].sum)
-    let chartData = [keys,values]
-
+    let chartData = this.props.data
     var formatter = new Intl.NumberFormat('en-US', {
     });
 
@@ -51,6 +47,7 @@ export default class BarChart extends Component {
         },
         series: [{
             name: 'Spend per Category',
+            animation:false,
             data: chartData[1],
             point: {
                 events: {

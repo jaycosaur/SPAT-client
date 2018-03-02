@@ -12,6 +12,9 @@ export default class BubbleChart extends Component {
                 click: e => this.props.actions({eventType: "deselect", type: "supplier"})
             }
         },
+        boost: {
+            useGPUTranslations: true
+        },
     
         legend: {
             enabled: false
@@ -49,6 +52,7 @@ export default class BubbleChart extends Component {
             }
         },
         series: [{
+            animation:false,
             data: this.props.data.map(item => {
                 const obj = {
                     x: item.numberInvoices,
