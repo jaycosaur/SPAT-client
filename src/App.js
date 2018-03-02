@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, createContext } from "react";
 import { withRouter } from "react-router-dom";
 import "./App.css";
 import { authUser, signOutUser } from "./libs/awsLib";
@@ -6,31 +6,16 @@ import { authUser, signOutUser } from "./libs/awsLib";
 import Routes from "./Routes";
 import SiderNav from "./components/SiderNav";
 import TopNav from "./components/TopNav";
+import FooterComponent from "./components/Footer"
 
-import { Layout, Icon, Spin, Row, BackTop, Alert, Divider } from 'antd';
-const { Header, Sider, Content, Footer } = Layout;
+import { Layout, Icon, Spin, Row, BackTop, Alert } from 'antd';
+const { Header, Sider, Content } = Layout;
 
-const FooterComponent = (props) => 
-  <Footer style={{ textAlign: 'center', background: 'rgb(159,193,69)', color:'#fff'}}>
-    <span style={{float: 'left'}}>
-      <a style={{color: '#fff'}}><strong>Privacy Policy</strong></a>
-      <Divider type="vertical"/>
-      <a style={{color: '#fff'}}><strong>Terms of Use</strong></a>
-    </span>
-    <span style={{float: 'center'}}>
-      SPAT and its encapsulated tools are developed by <strong>grosvenor.digital</strong> | Copyright © {new Date().getFullYear()}
-    </span>
-    <span style={{float:'right'}}>
-      <Icon type="facebook" style={{ fontSize: '24px', padding:'0 16px'}}/>
-      <Icon type="twitter" style={{ fontSize: '24px', padding:'0 16px'}}/>
-      <Icon type="linkedin" style={{ fontSize: '24px', padding:'0 16px'}}/>
-    </span>
-  </Footer>
+export const AppContext = createContext()
 
 class App extends Component {
   constructor(props) {
     super(props);
-  
     this.state = {
       isAuthenticated: false,
       isAuthenticating: true,
@@ -41,12 +26,6 @@ class App extends Component {
       showAlert: false,
       authenticationErrorMessage: null,
     };
-  }
-
-  toggleCollapsed = () => {
-    this.setState({
-      collapsed: !this.state.collapsed,
-    });
   }
 
   handleMenuNavClick = (e) => {
@@ -77,17 +56,13 @@ class App extends Component {
   }
 
   handleLogout = event => {
-
     const confirmed = window.confirm(
       "Are you sure you want to logout?"
     );
-  
     if (!confirmed) {
       return;
     }
-
     signOutUser();
-  
     this.userHasAuthenticated(false);
     this.props.history.push("/login");
   }
@@ -109,43 +84,20 @@ class App extends Component {
       alertVisible: this.alertVisible,
     };
 
-    return (
-      /*
-      !this.state.isAuthenticating &&
-      <div className="App container-fluid">
-        <Navbar className="navbar" fluid collapseOnSelect>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <Link to="/"><span className="glyphicon glyphicon-flash"></span> <strong>SPAT</strong> - Spend Analytics Toolset</Link>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-          </Navbar.Header>
-          <Navbar.Collapse className="navbar-dark bg-dark">
-            <Nav pullRight>
-              {this.state.isAuthenticated
-                ? [
-                  <RouteNavItem key={1} href="/"><span className="glyphicon glyphicon-stats"></span> Analyse</RouteNavItem>,
-                  <RouteNavItem key={2} href="/datasets/upload"><span className="glyphicon glyphicon-cloud-upload"></span> Classify</RouteNavItem>,
-                  <RouteNavItem key={3} href="/contact"><span className="glyphicon glyphicon-envelope"></span> Contact </RouteNavItem>,
-                  <RouteNavItem key={4} href="/myprofile"><span className="glyphicon glyphicon-user"></span> Profile</RouteNavItem>,
-                  <NavItem key={5} onClick={this.handleLogout}><span className="glyphicon glyphicon-lock"></span> Logout</NavItem> ]
-                : [
-                  <RouteNavItem key={6} href="/login">
-                    <strong>Login</strong>
-                  </RouteNavItem>
-                ]}
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
-        <div className="container-fluid">
+    const LayoutContainer = (props) => 
+      <Layout style={{ marginLeft: 80, minHeight: '100vh' }}>
+        <Header style={{ background: 'linear-gradient(to right, rgb(22,85,151), #1a9ed9,rgb(159,193,69))', paddingLeft: '16px', color: '#fff', borderRadius: '0 0 32px 0' }}>
+          <Row>
+            <span>Spend Analytics Tool</span>
+          </Row>
+        </Header>
+        <Content>
           <Routes childProps={childProps} />
-        </div>
-      </div>
-      */
-    [ this.state.showAlert&&<Alert onClose={e => {this.toggleAlert()}}type="error" message={this.state.authenticationErrorMessage&&(this.state.authenticationErrorMessage.code+': '+this.state.authenticationErrorMessage.message)} banner closable/>,  
-      !this.state.isAuthenticating && this.state.isAuthenticated &&
-    <Layout style={{background: "#fff"}}>
-      <BackTop />
+        </Content>
+        < FooterComponent />
+      </Layout>
+
+    const SiderContainer = (props) =>
       <Sider
         trigger={null}
         collapsible
@@ -157,37 +109,42 @@ class App extends Component {
         </div>
         <SiderNav handleLogout={this.handleLogout}/>
       </Sider>
-      <Layout style={{ marginLeft: 80, minHeight: '100vh' }}>
-        {<Header style={{ background: 'linear-gradient(to right, rgb(22,85,151), #1a9ed9,rgb(159,193,69))', paddingLeft: '16px', color: '#fff', borderRadius: '0 0 32px 0' }}>
-          <Row>
-            <span><strong>SPAT - SPend Analytics Toolkit</strong></span> | <span style={{align: 'right'}}>grosvenor.digital</span>
-          </Row>
-        </Header>}
-        <Content>
+
+    const AuthenticatedView = (props) => 
+      <Layout style={{background: "#fff"}}>
+        <BackTop />
+        <SiderContainer />
+        <LayoutContainer />
+      </Layout>
+
+    const UnauthenticatedView = (props) =>
+      <Layout>
+        <BackTop />
+        <Header style={{position: 'fixed', width:'100%', padding: '0px', background: 'none', zIndex: '500'}}>
+          <TopNav />
+        </Header>
+        <Content style={{marginTop: 64}}>
           <Routes childProps={childProps} />
         </Content>
         < FooterComponent />
       </Layout>
-    </Layout>,
-    !this.state.isAuthenticating && !this.state.isAuthenticated &&
-    <Layout>
-      <BackTop />
-      <Header style={{position: 'fixed', width:'100%', padding: '0px', background: 'none', zIndex: '500'}}>
-        <TopNav />
-      </Header>
-      <Content style={{marginTop: 64}}>
-        <Routes childProps={childProps} />
-      </Content>
-      < FooterComponent />
-    </Layout>,
-    this.state.isAuthenticating&&
-      <div style={{height:'100vh',display:'flex',alignItems: 'center',justifyContent: 'center'           
-    }}>
+
+    const AuthenticatingView = (props) => 
+      <div style={{height:'100vh',display:'flex',alignItems: 'center',justifyContent: 'center'}}>
         <Spin
           indicator={<Icon type='loading' style={{fontSize: '100px', color: 'rgb(159,193,69)'}}/>}
           />
       </div>
-    ]
+
+    const UpperAlert = (props) => <Alert onClose={e => {this.toggleAlert()}}type="error" message={this.state.authenticationErrorMessage&&(this.state.authenticationErrorMessage.code+': '+this.state.authenticationErrorMessage.message)} banner closable/>
+
+    return (
+      <AppContext.Provider value={this.state}>
+        {this.state.showAlert&&<UpperAlert />}
+        {!this.state.isAuthenticating&&this.state.isAuthenticated&&<AuthenticatedView />}
+        {!this.state.isAuthenticating&&!this.state.isAuthenticated&&<UnauthenticatedView />}
+        {this.state.isAuthenticating&&<AuthenticatingView />}
+      </AppContext.Provider>
     )
   }
 }

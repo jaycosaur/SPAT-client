@@ -1,0 +1,24 @@
+@media all and (min-width: 480px) {
+    .Login {
+      padding: 10px;
+      height: 100vh;
+    }
+
+    .Login label {
+      color: white;
+    }
+  
+    .Login form {
+      margin: 0 auto;
+      max-width: 320px;
+    }
+  }
+
+.Login {
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#0067ac+0,0093d0+33,54b948+66,a0cf67+100 */
+  background: #0067ac; /* Old browsers */
+  background: -moz-linear-gradient(45deg, #0067ac 0%, #0093d0 33%, #54b948 66%, #a0cf67 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(45deg, #0067ac 0%,#0093d0 33%,#54b948 66%,#a0cf67 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(45deg, #0067ac 0%,#0093d0 33%,#54b948 66%,#a0cf67 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0067ac', endColorstr='#a0cf67',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}

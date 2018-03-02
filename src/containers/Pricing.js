@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from 'prop-types'
 
 import { List, Button, Card, Row, Col, Icon } from 'antd';
@@ -89,20 +89,7 @@ FullWidthDiv.propTypes = {
 }
 
 
-export default class Pricing extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isLoading: true,
-    };
-  }
-
-  async componentDidMount() {
-  }
-
-  render() {
-    return (
+export default () =>
       <div className="Pricing" style={{padding:'30px 0'}}>
         <FullWidthDiv backgroundColor='none' type='flex' justify='center' padding='16px 0' margin='16px 0'>
             <h1 style={{textAlign:'center', maxWidth: '70%', color: 'rgb(22,85,151)'}}><strong>Dramatically engage top-line web services vis-a-vis cutting-edge deliverables.</strong></h1>
@@ -121,7 +108,7 @@ export default class Pricing extends Component {
                 <p style={{maxWidth: '50%'}}>Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.</p>
             </Row>
             <Row type='flex' justify='center'>
-                <a href='#' style={{color:'#fff'}}>Learn more <Icon type='arrow-right' /></a>
+                <a href='google.com' style={{color:'#fff'}}>Learn more <Icon type='arrow-right' /></a>
             </Row>
         </FullWidthDiv>
         <FullWidthDiv>
@@ -134,7 +121,7 @@ export default class Pricing extends Component {
                 <p style={{maxWidth: '50%'}}>Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.</p>
             </Row>
             <Row type='flex' justify='center'>
-                <a href='#' style={{color:'#fff'}}>Learn more <Icon type='arrow-right' /></a>
+                <a href='google.com' style={{color:'#fff'}}>Learn more <Icon type='arrow-right' /></a>
             </Row>
         </FullWidthDiv>
         <FullWidthDiv backgroundColor='#1a9ed9' extraStyles={{color: '#fff'}}>
@@ -147,7 +134,7 @@ export default class Pricing extends Component {
                 <p style={{maxWidth: '50%'}}>Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.</p>
             </Row>
             <Row type='flex' justify='center'>
-                <a href='#' style={{color:'#fff'}}>Learn more <Icon type='arrow-right' /></a>
+                <a href='google.com' style={{color:'#fff'}}>Learn more <Icon type='arrow-right' /></a>
             </Row>
         </FullWidthDiv>
         <FullWidthDiv backgroundColor='linear-gradient(to right, rgb(22,85,151), #1a9ed9,rgb(159,193,69))' extraStyles={{color: '#fff'}}>
@@ -160,10 +147,7 @@ export default class Pricing extends Component {
                 <p style={{maxWidth: '50%'}}>Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.</p>
             </Row>
             <Row type='flex' justify='center'>
-                <a href='#' style={{color:'#fff'}}>Learn more <Icon type='arrow-right' /></a>
+                <a href='google.com' style={{color:'#fff'}}>Learn more <Icon type='arrow-right' /></a>
             </Row>
         </FullWidthDiv>
       </div>
-    );
-  }
-}

@@ -121,7 +121,7 @@ export default class HomeLander extends Component {
                 <p style={{maxWidth: '50%'}}>Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.</p>
             </Row>
             <Row type='flex' justify='center'>
-                <a href='#' style={{color:'#fff'}}>Learn more <Icon type='arrow-right' /></a>
+                <a href='google.com' style={{color:'#fff'}}>Learn more <Icon type='arrow-right' /></a>
             </Row>
         </FullWidthDiv>
         <FullWidthDiv>

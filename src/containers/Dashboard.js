@@ -5,8 +5,6 @@ import * as V from 'victory';
 import "./Dashboard.css";
 import { invokeApig } from "../libs/awsLib";
 
-
-
 export default class Datasets extends Component {
   constructor(props) {
     super(props);
