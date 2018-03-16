@@ -274,6 +274,9 @@ export default class Signup extends Component {
   render() {
     return (
       <div className="Signup">
+        <div className="text-center" style={{marginBottom: 50}}>
+          <img alt="SPAT Icon" src="SPATICON-white.png" height="150" width="150" />
+        </div>
         {this.state.newUser === null
           ? this.renderForm()
           : this.renderConfirmationForm()}

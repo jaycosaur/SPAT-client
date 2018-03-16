@@ -1,6 +1,6 @@
 import React from "react";
 
-import HomeLander from './HomeLander'
+import HomeLander from './HomeLander/'
 import HomeDashboard from './HomeDashboard'
 
 export default (props) => 

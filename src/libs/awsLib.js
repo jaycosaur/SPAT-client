@@ -128,11 +128,11 @@ function getAwsCredentials(userToken) {
   
     body = body ? JSON.stringify(body) : body;
     headers = signedRequest.headers;
-  
+    
     const results = await fetch(signedRequest.url, {
       method,
       headers,
-      body
+      body,
     });
   
     if (results.status !== 200) {

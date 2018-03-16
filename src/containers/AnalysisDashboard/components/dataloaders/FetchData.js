@@ -1,7 +1,7 @@
-import { Component } from 'react'
+import { PureComponent } from 'react'
 import { invokeApig } from "./../../../../libs/awsLib";
 
-export default class FetchData extends Component {
+export default class FetchData extends PureComponent {
   state = {
     isFetching: true,
     isError: false,

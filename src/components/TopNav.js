@@ -43,6 +43,14 @@ export default props =>
         <Icon type="credit-card" />
         <span>Pricing</span>
       </RouteNavItem>
+      <RouteNavItem key="about" href="/about">
+        <Icon type="team" />
+        <span>About</span>
+      </RouteNavItem>
+      <RouteNavItem key="getintouch" href="/getintouch">
+        <Icon type="customer-service" />
+        <span>Contact</span>
+      </RouteNavItem>
       <span style={{float:'right', paddingRight: '16px'}}>
         <Button id='login' style={{marginRight: '16px'}} key='login' href='/' type='primary'><Icon type="user" />Login</Button>
         <Button id='signup' key='signup' href="/signup" type='default'><Icon type="user-add" />Signup</Button>

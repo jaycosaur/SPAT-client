@@ -24,7 +24,7 @@ export default (props) =>
             <div>
                 <Row className="chart-row" gutter={16}>
                     <Col span={24}>
-                        <FetchData path="/query/1/categoryclean">
+                        <FetchData path="/datalake/ds-12345/categorylevel1query">
                             {({isFetching, isError, data}) =>
                                 <Card hoverable loading={isFetching} title="Dataset Overview" bodyStyle={{padding: 0}} extra={<Icon type={isFetching?'loading':'check-circle'} style={{color: '#95de64'}}/>}>
                                     {[
@@ -43,16 +43,21 @@ export default (props) =>
                 </Row>
                 <Row className="chart-row" gutter={16}>
                     <Col span={12}>
-                        <Card hoverable title="Key Statistics" bodyStyle={{padding: 0}} extra={<Icon type='check-circle' style={{color: '#95de64'}}/>}>
-                            {[
-                                <SingleItem accounting value={23913} title="MEDIAN INVOICE"/>,
-                                <SingleItem accounting value={23913} title="AVERAGE PO"/>,
-                                <SingleItem value={46740} title="# INVOICES <$5K"/>,
-                                <SingleItem value={48810} title="# INVOICES <$20K"/>,
-                                <SingleItem value={23913} title="# PURCHASE ORDERS"/>,
-                                <SingleItem value={23913} title="# PURCHASE ORDERS"/>
-                            ].map((item, i) => <CardGrid key={i} width="50%" render={item} />)}
-                        </Card>
+                        <FetchData path="/api/ds-12345/categoryquery/">
+                            {({isFetching, isError, data}) =>
+                                <Card loading={isFetching} hoverable title="Key Statistics" bodyStyle={{padding: 0}} extra={<Icon type='check-circle' style={{color: '#95de64'}}/>}>
+
+                                    {[
+                                        <SingleItem accounting value={23913} title="MEDIAN INVOICE"/>,
+                                        <SingleItem accounting value={23913} title="AVERAGE PO"/>,
+                                        <SingleItem value={46740} title="# INVOICES <$5K"/>,
+                                        <SingleItem value={48810} title="# INVOICES <$20K"/>,
+                                        <SingleItem value={23913} title="# PURCHASE ORDERS"/>,
+                                        <SingleItem value={23913} title="# PURCHASE ORDERS"/>
+                                    ].map((item, i) => <CardGrid key={i} width="50%" render={item} />)}
+                                </Card>
+                            }
+                        </FetchData>
                     </Col>
                     <Col span={12}>
                         <FetchData path="/query/1/organisation">
@@ -88,6 +93,9 @@ export default (props) =>
                                     {({isFetching, isError, data}) =>
                                         !isFetching&&<DataTable actions={props.actions} data={data.data}/>
                                     }
+                                </FetchData>
+                                <FetchData path="/queryapi/dataset/ds-12345/categoryquery/start-date=2016-08-23">
+                                    {({isFetching, isError, data}) => null }
                                 </FetchData>
                             </Card.Grid>
                         </Card>

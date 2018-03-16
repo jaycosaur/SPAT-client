@@ -17,7 +17,7 @@ export default class Pricing extends Component {
 
   render() {
     return (
-      <div className="Features">
+      <div className="Features" style={{minHeight: "100vh"}}>
         <Jumbotron>
             <div className="Home">
             <div className="lander">
