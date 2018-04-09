@@ -1,14 +1,13 @@
-import React, { Component } from "react";
-import { Tag, Popover, Avatar } from 'antd';
-import { DataLoader, DataContext } from './dataloader'
-import "./AnalysisDashboard.css"
+import React, { PureComponent } from "react";
+import { Tag, Popover, Avatar, Affix, Card } from 'antd';
+import { DashboardProvider, DashboardConsumer } from './store/'
 
 import View from './view'
 
-
-export default class AnalysisDashboard extends Component {
+export default class AnalysisDashboard extends PureComponent {
     state={
-        activeFilters: []
+        activeFilters: [],
+        isFullScreen: false
     }
     handleClick = (e) => {
         if (e.eventType === "select"){
@@ -21,6 +20,9 @@ export default class AnalysisDashboard extends Component {
             })
         }   
     }
+    toggleFullScreen = () => {
+        this.setState((state) => {return {isFullScreen: !state.isFullScreen}})
+    }
     closeHandler = (e) => {
         let arr = this.state.activeFilters
         arr.splice(e,1)
@@ -29,19 +31,35 @@ export default class AnalysisDashboard extends Component {
         })
     }
 
+    componentDidMount() {
+        this.setState({
+            datasetId: this.props.match.params.id
+        })
+    }
+
     render() {
+        const fullScreenStyle = {
+            position: "absolute",
+            left: 0,
+            top: 0,
+            background: "#f0f2f5"
+        }
         return (
-            <div className="AnalysisDashboard">
-                <DataLoader>
-                    <FilterPopover 
-                        activeFilters={this.state.activeFilters.map(i=>i[2])} 
-                        closeHandler={this.closeHandler}/>
-                    <DataContext.Consumer>
+            <div className="AnalysisDashboard" style={this.state.isFullScreen?fullScreenStyle:{}}>
+                <DashboardProvider>
+                    <DashboardConsumer>
                         { context =>
-                            <View actions={context.actions}/>
+                            <FilterPopover
+                                activeFilters={context.filter.category} 
+                                actions={context.actions}/>
                         }
-                    </DataContext.Consumer>
-                </DataLoader>
+                    </DashboardConsumer>
+                    <DashboardConsumer>
+                        { context =>
+                            <View toggleFullScreen={this.toggleFullScreen} isFullScreen={this.state.isFullScreen} datasetId={this.state.datasetId} actions={context.actions}/>
+                        }
+                    </DashboardConsumer>
+                </DashboardProvider>
             </div>
         )
     }
@@ -50,16 +68,16 @@ export default class AnalysisDashboard extends Component {
 const FilterContent = (props) =>
             <div style={{width: 140}}>
                 {props.activeFilters.length>0&&props.activeFilters.map((item, key) =>
-                    <Tag key={item} closable onClose={e => {e.preventDefault();props.closeHandler(key)}}>{item}</Tag>
+                    <Tag key={key} closable onClose={e => {e.preventDefault();props.closeHandler({type:'category', index: key})}}>{item}</Tag>
                 )}
             </div>
 
 const FilterPopover = (props) =>
             !props.activeFilters.length>0
                 ?
-                <Avatar size="large" icon="filter" style={{ backgroundColor: 'gray', position: "fixed", zIndex: 2000, right: 0, top: 0, marginRight: 10, marginTop: 10 }}/>
+                <Avatar size="large" icon="filter" style={{ backgroundColor: 'gray', position: "fixed", zIndex: 100, right: 0, top: 0, marginRight: 10, marginTop: 10 }}/>
                 :
-                <Popover content={<FilterContent activeFilters={props.activeFilters} closeHandler={props.closeHandler}/>} placement="leftTop">
-                    <Avatar size="large" icon="filter" style={{ backgroundColor: '#a0cf67', position: "fixed", zIndex: 2000, right: 0, top: 0, marginRight: 10, marginTop: 10 }}/>
+                <Popover content={<FilterContent activeFilters={props.activeFilters} closeHandler={props.actions.categoryDeselect}/>} placement="leftTop">
+                    <Avatar size="large" icon="filter" style={{ border: "solid 1px #fff", backgroundColor: '#a0cf67', position: "fixed", zIndex: 100, right: 0, top: 0, marginRight: 10, marginTop: 10 }}/>
                 </Popover>
 

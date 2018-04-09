@@ -2,7 +2,7 @@ import React from 'react'
 import { Table } from 'antd';
 
 
-export default class DataTable extends React.Component {
+export default class DataTable extends React.PureComponent {
   state = {
     data: this.props.data
   };

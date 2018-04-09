@@ -1,6 +1,5 @@
 import React from 'react'
 import FullWidthDiv from './../components/FullWidthDiv'
-import { Row, Icon } from 'antd';
 
 export default () => {
   return (

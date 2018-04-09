@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import { Grid,  Col } from "react-bootstrap";
-import LoaderButton from "../../components/LoaderButton";
 import "./NewUpload.css";
 import config from "../../config";
 import { invokeApig, s3Upload } from "../../libs/awsLib";
@@ -92,12 +90,11 @@ export default class NewUpload extends Component {
     return (
       <div className="NewUpload">
         {/*<Progress height="4" color="#1a9ed9" percent={this.state.uploadProgress} />*/}
-        <Grid>
           <DatasetContainer status="Upload">
-            <Col md={6} mdOffset={3} xs={12}>
+            <div style={{display: "flex", justifyContent: "center"}}>
               <Card 
                 title="Upload Dataset" 
-                style={{marginBottom: '16px'}}
+                style={{marginBottom: '16px', maxWidth: 600}}
                 extra={<Button>Download Data Template<Icon type="cloud-download-o" /></Button>}
                 >
               {!this.state.isLoading?<form onSubmit={this.handleSubmit}>
@@ -130,16 +127,11 @@ export default class NewUpload extends Component {
                       onChange={this.handleChange}
                       />
                   </Row>
-                  <LoaderButton
-                    block
-                    bsStyle="primary"
-                    bsSize="large"
+                  <Button
+                    type="primary"
+                    size="large"
                     disabled={!this.validateForm()}
-                    type="submit"
-                    isLoading={this.state.isLoading}
-                    text="Upload"
-                    loadingText={"Uploading file: "+Math.round(this.state.uploadProgress)+"%"}
-                  />
+                  >Upload</Button>
                 </form>:
                 <div style={{justifyContent: 'center', display: 'flex', flexDirection: 'column'}}>
                   <Row style={{justifyContent: 'center', display: 'flex', flexDirection: 'column', marginBottom: '30px'}}>
@@ -179,9 +171,8 @@ export default class NewUpload extends Component {
                   </Row>}
                 </div>}                                
               </Card>
-            </Col>
+            </div>
           </DatasetContainer>
-        </Grid>
       </div>
     );
   }

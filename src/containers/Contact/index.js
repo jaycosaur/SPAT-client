@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { FormGroup, FormControl, ControlLabel, HelpBlock, PageHeader, Grid, Col, Row } from "react-bootstrap";
+import { FormGroup, FormControl, ControlLabel, HelpBlock } from "react-bootstrap";
 import LoaderButton from "../../components/LoaderButton";
 import Moment from 'react-moment';
 
-import { Card, List, Input, Button, Divider, Avatar, Popover } from 'antd';
+import { Card, List, Input, Button, Divider, Avatar, Popover, Col, Row } from 'antd';
 
 import "./Contact.css";
 import { invokeApig } from "../../libs/awsLib";
@@ -61,58 +61,55 @@ export default class Contact extends Component {
   render() {
     return (
       <div className="contact">
-        <Grid>
-          <PageHeader>Contact Centre</PageHeader>
-            <Row>
-                <Col md={6} xs={12}>
-                    <InboxContainer />
-                </Col>
-                <Col md={6} xs={12}>
-                    <Card title="Contact Form">
-                        <form onSubmit={this.handleSubmit}>
-                            <FormGroup controlId="type" bsSize="large">
-                                <ControlLabel>Select Contact Reason</ControlLabel>
-                                <FormControl componentClass="select" placeholder="select">
-                                    <option value="select">Feedback</option>
-                                    <option value="other">Problem / Error / Bug</option>
-                                    <option value="other">General Contact</option>
-                                    <option value="other">Other</option>
-                                </FormControl>
-                            </FormGroup>
-                            <FormGroup controlId="title" bsSize="large">
-                                <ControlLabel>Contact Title</ControlLabel>
-                                <FormControl
-                                    autoFocus
-                                    type="name"
-                                    value={this.state.title}
-                                    onChange={this.handleChange}
-                                />
-                                <HelpBlock>Short description of your contact reason.</HelpBlock>
-                                </FormGroup>    
-                            <FormGroup controlId="description">
-                                <ControlLabel>Contact Description</ControlLabel>
-                                <FormControl
+        <Row gutter={16}>
+            <Col md={12} xs={24}>
+                <InboxContainer />
+            </Col>
+            <Col md={12} xs={24}>
+                <Card title="Contact Form">
+                    <form onSubmit={this.handleSubmit}>
+                        <FormGroup controlId="type" bsSize="large">
+                            <ControlLabel>Select Contact Reason</ControlLabel>
+                            <FormControl componentClass="select" placeholder="select">
+                                <option value="select">Feedback</option>
+                                <option value="other">Problem / Error / Bug</option>
+                                <option value="other">General Contact</option>
+                                <option value="other">Other</option>
+                            </FormControl>
+                        </FormGroup>
+                        <FormGroup controlId="title" bsSize="large">
+                            <ControlLabel>Contact Title</ControlLabel>
+                            <FormControl
+                                autoFocus
+                                type="name"
+                                value={this.state.title}
                                 onChange={this.handleChange}
-                                value={this.state.description}
-                                componentClass="textarea"
-                                />
-                                <HelpBlock>Please describe in as much detail as possible.</HelpBlock>
-                            </FormGroup>
-                            <LoaderButton
-                                block
-                                bsStyle="primary"
-                                bsSize="large"
-                                disabled={!this.validateForm()}
-                                type="submit"
-                                isLoading={this.state.isLoading}
-                                text="Send Message"
-                                loadingText={"Sending ..."}
                             />
-                        </form>
-                    </Card>
-                </Col>
-            </Row>
-        </Grid>
+                            <HelpBlock>Short description of your contact reason.</HelpBlock>
+                            </FormGroup>    
+                        <FormGroup controlId="description">
+                            <ControlLabel>Contact Description</ControlLabel>
+                            <FormControl
+                            onChange={this.handleChange}
+                            value={this.state.description}
+                            componentClass="textarea"
+                            />
+                            <HelpBlock>Please describe in as much detail as possible.</HelpBlock>
+                        </FormGroup>
+                        <LoaderButton
+                            block
+                            bsStyle="primary"
+                            bsSize="large"
+                            disabled={!this.validateForm()}
+                            type="submit"
+                            isLoading={this.state.isLoading}
+                            text="Send Message"
+                            loadingText={"Sending ..."}
+                        />
+                    </form>
+                </Card>
+            </Col>
+        </Row>
       </div>
     );
   }

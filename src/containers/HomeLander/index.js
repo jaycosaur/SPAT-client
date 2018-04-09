@@ -1,9 +1,7 @@
 import React from "react";
-import PropTypes from 'prop-types'
 
-import { Button, Row, Col, Icon } from 'antd';
+import { Button, Row, Icon } from 'antd';
 
-import MacWindow from './../../components/MacWindow'
 import FullWidthDiv from './components/FullWidthDiv'
 import ContentBiCard from './components/ContentBiCard'
 import MainSplash from './containers/MainSplash'

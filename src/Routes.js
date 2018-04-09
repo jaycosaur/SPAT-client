@@ -8,21 +8,22 @@ import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
 
 import Home from "./containers/Home";
 import Features from "./containers/Features"
-import Pricing from "./containers/Pricing"
+import Pricing from "./containers/Pricing/"
 import NotFound from "./containers/NotFound";
+import ServerError from "./containers/ServerError"
 import Login from "./containers/Login/";
 import Signup from "./containers/Signup/";
 import ResetPassword from "./containers/ResetPassword/";
-
+import SlowLoader from './components/SlowLoading'
 
 const MyLoadingComponent = ({isLoading, error}) => {
   // Handle the loading state
   if (isLoading) {
-    return <div>Loading...</div>;
+    return null;
   }
   // Handle the error state
   else if (error) {
-    return <div>Sorry, there was a problem loading the page.</div>;
+    return <ServerError />;
   }
   else {
     return null;
@@ -44,6 +45,11 @@ const AsyncAnalysisDashboard = Loadable({
   loading: MyLoadingComponent
 })
 
+const AsyncAnalysisDashboardSelectView = Loadable({
+  loader: () => import("./containers/AnalysisDashboardSelectView/"),
+  loading: MyLoadingComponent
+})
+
 const AsyncDatasets = Loadable({
   loader: () => import("./containers/Datasets/"),
   loading: MyLoadingComponent
@@ -61,10 +67,13 @@ export default ({ childProps }) =>
     <UnauthenticatedRoute key='login' path="/login" exact component={Login} props={childProps} />
     <UnauthenticatedRoute key='resetpassword' path="/login/resetpassword" exact component={ResetPassword} props={childProps} />
     <UnauthenticatedRoute key='signup' path="/signup" exact component={Signup} props={childProps} />
-    <UnauthenticatedRoute key='features' path="/features" exact component={Features} props={childProps} />
+    <UnauthenticatedRoute key='signup' path="/signup/:plan" exact component={Signup} props={childProps} />
     <UnauthenticatedRoute key='pricing' path="/pricing" exact component={Pricing} props={childProps} />
+    <UnauthenticatedRoute key='pricing' path="/pricing/:extra" signupPath exact component={Pricing} props={childProps} />
+    <UnauthenticatedRoute key='about' path="/about" signupPath exact component={SlowLoader} props={childProps} />
 
-    <AuthenticatedRoute key={'analysisdashboard'} path="/analysisdashboard" exact component={AsyncAnalysisDashboard} props={childProps} />
+    <AuthenticatedRoute key={'analysisdashboard'} path="/analysisdashboard" exact component={AsyncAnalysisDashboardSelectView} props={childProps} />
+    <AuthenticatedRoute key={'analysisdashboard'} path="/analysisdashboard/:id" exact component={AsyncAnalysisDashboard} props={childProps} />
     <AuthenticatedRoute key={'upload'} path="/datasets/upload" exact component={AsyncNewUpload} props={childProps} />
     <AuthenticatedRoute key={'dataset'} path="/datasets/:id" exact component={AsyncDatasets} props={childProps} />
     <AuthenticatedRoute key={'contact'} path="/contact" exact component={AsyncContact} props={childProps} />

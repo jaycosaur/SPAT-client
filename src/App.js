@@ -1,14 +1,14 @@
 import React, { Component, createContext } from "react";
 import { withRouter } from "react-router-dom";
 import "./App.css";
-import { authUser, signOutUser } from "./libs/awsLib";
+import { Auth } from 'aws-amplify'
 
 import Routes from "./Routes";
 import SiderNav from "./components/SiderNav";
 import TopNav from "./components/TopNav";
 import FooterComponent from "./components/Footer"
 
-import { Layout, Icon, Spin, Row, BackTop, Alert } from 'antd';
+import { Layout, Icon, Spin, Row, BackTop, Alert, Input, Button} from 'antd';
 const { Header, Sider, Content } = Layout;
 
 export const AppContext = createContext()
@@ -37,17 +37,15 @@ class App extends Component {
 
   async componentDidMount() {
     try {
-      if (await authUser()) {
+      if (await Auth.currentSession()) {
         this.userHasAuthenticated(true);
       }
     }
     catch(e) {
       this.setState({
         authenticationErrorMessage: e,
-        showAlert: true
       })
     }
-  
     this.setState({ isAuthenticating: false });
   }
   
@@ -55,14 +53,14 @@ class App extends Component {
     this.setState({ isAuthenticated: authenticated });
   }
 
-  handleLogout = event => {
+  handleLogout = async event => {
     const confirmed = window.confirm(
       "Are you sure you want to logout?"
     );
     if (!confirmed) {
       return;
     }
-    signOutUser();
+    await Auth.signOut();
     this.userHasAuthenticated(false);
     this.props.history.push("/login");
   }
@@ -84,13 +82,52 @@ class App extends Component {
       alertVisible: this.alertVisible,
     };
 
-    const LayoutContainer = (props) => 
-      <Layout style={{ marginLeft: 80, minHeight: '100vh' }}>
-        <Header style={{ background: 'linear-gradient(to right, rgb(22,85,151), #1a9ed9,rgb(159,193,69))', paddingLeft: '16px', color: '#fff', borderRadius: '0 0 32px 0' }}>
-          <Row>
-            <span>Spend Analytics Tool</span>
+    const headerStyle = { 
+      background: 'linear-gradient(to right, rgb(22,85,151), #1a9ed9,rgb(159,193,69))', 
+      paddingLeft: '16px', 
+      color: '#fff', 
+      borderRadius: '0 0 32px 0'
+    }
+
+    /*const headerStyle = { 
+      background: 'linear-gradient(to right, rgb(22,85,151), #1a9ed9,rgb(159,193,69))', 
+      paddingLeft: '16px', 
+      color: '#fff', 
+      borderRadius: '0 0 32px 0'*/
+          
+class HeaderBar extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      isFocused: false,
+      isHovered: false
+    }
+  }
+
+  toggleHover = () => {
+    this.setState((state) => {return {isHovered: !state.isHovered}})
+  }
+
+  render() {
+    return (
+      <Header 
+          style={headerStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover}>
+      <span style={{float: "right"}}>
+        {!this.state.isHovered?<Button shape="circle" icon="search" />:<Input.Search enterButton placeholder="input search text" />}
+      </span>
+      <Row>
+            <span>Spend Analytics Tool </span>
           </Row>
         </Header>
+    )
+  }
+}
+  
+    const LayoutContainer = (props) => 
+      <Layout style={{ marginLeft: 80, minHeight: '100vh' }}>
+        {
+          <HeaderBar />
+          }
         <Content>
           <Routes childProps={childProps} />
         </Content>

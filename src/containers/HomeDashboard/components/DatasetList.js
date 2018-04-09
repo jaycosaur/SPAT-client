@@ -1,5 +1,5 @@
 import React from 'react'
-import { List, Avatar } from 'antd'
+import { List, Avatar, Badge } from 'antd'
 import { Link } from 'react-router-dom'
 
 export default (props) => {
@@ -45,7 +45,7 @@ export default (props) => {
             renderItem={item => (
               <List.Item key={String(item.datasetId)}>
                 <List.Item.Meta
-                  avatar={<Avatar size="large" style={{color: computeAvatarStyle(item.state), backgroundColor: 'transparent', border: '2px solid', borderColor: computeAvatarStyle(item.state)}} icon={bsStyleGen(item.state)} />}                                     
+                  avatar={<Badge status="success" dot><Avatar size="large" style={{color: computeAvatarStyle(item.state), backgroundColor: 'transparent', border: '2px solid', borderColor: computeAvatarStyle(item.state)}} icon={bsStyleGen(item.state)} /></Badge>}                                     
                   title={
                     <Link to={`/datasets/${item.datasetId}`}>
                       {item.title.trim().split("\n")[0]}

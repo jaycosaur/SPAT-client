@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
-
-import { Button, Row, Col, Icon } from 'antd';
+import { Row, Col } from 'antd';
 
 import AutoTypewriter from './../../../components/AutoTypewriter'
 import StyledButton from './../components/StyledButton'

@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import ReactHighcharts from 'react-highcharts'
 import HighchartsMore from 'highcharts/highcharts-more'
 HighchartsMore(ReactHighcharts.Highcharts);
 
-export default class BubbleChart extends Component {
+export default class BubbleChart extends PureComponent {
   render() {
     const config = {
         chart: {

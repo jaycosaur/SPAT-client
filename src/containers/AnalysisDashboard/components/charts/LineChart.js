@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import ReactHighcharts from 'react-highcharts'
 
-export default class LineChart extends Component {
+export default class LineChart extends PureComponent {
   render() {
     const config = {
         chart: {

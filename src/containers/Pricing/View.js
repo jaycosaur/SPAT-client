@@ -1,11 +1,12 @@
 import React from "react";
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 import { List, Button, Card, Row, Col, Icon } from 'antd';
 
 const tierData = [
     {
-        'title':'Basic',
+        'title':'Standard',
         'price': '599',
         'subtitle': 'Powerful features and monthly uploads',
         'points': [true, true, false, false],
@@ -37,7 +38,7 @@ const data = [
   ];
 
 const PricingCard = (props) =>
-    <Col span={props.cardWidth} style={{padding:'0 16px'}}>
+    <Col key={props.item} span={props.cardWidth} style={{padding:'0 4px'}}>
         {props.data.isPopular&&
             <Row type="flex" justify="center" style={{marginBottom:'16px', color:'rgb(159,193,69)'}}>
                 <span>
@@ -45,7 +46,7 @@ const PricingCard = (props) =>
                 </span>
             </Row>
         }
-        <Card style={{paddingBottom: '30px', borderColor: props.data.isPopular?'rgb(159,193,69)':null}}>
+        <Card onClick={props.onSelect} hoverable style={{borderColor: props.data.isPopular?'rgb(159,193,69)':null}}>
             <Row style={{textAlign:'center', padding: '20px'}}>
                 <h3 style={{paddingBottom: '0px'}}><strong>{props.data.title}</strong></h3>
                 <Row type="flex" justify="center" align="top">
@@ -72,12 +73,28 @@ const PricingCard = (props) =>
                     </List.Item>)}
                 />
             </Row>
-            <Row style={{textAlign:'center'}}>
-                <Button style={{marginTop: '30px', marginBottom: '30px'}} size='large' type='primary'>Sign Up</Button>
+            {props.selected&&<Row style={{textAlign:'center'}}>
+                <Link to={`/signup/${props.type}`}><Button icon="user-add" style={{marginTop: '30px', marginBottom: '30px', width: 200}} size='large' type='primary'>Choose Plan</Button></Link>
                 <h4>{props.data.condition}</h4>
-            </Row>
+            </Row>}
         </Card>
     </Col>
+
+
+
+export default (props) =>(
+      <div className="Pricing" style={{padding:'30px 0'}}>
+        <FullWidthDiv backgroundColor='none' type='flex' justify='center' padding='16px 0' margin='16px 0'>
+            {props.signupPath?<h1 style={{textAlign:'center', maxWidth: '70%', color: 'rgb(22,85,151)'}}><strong>Please choose a plan to continue with Sign Up.</strong></h1>
+            :<h1 style={{textAlign:'center', maxWidth: '70%', color: 'rgb(22,85,151)'}}><strong>Dramatically engage top-line web services vis-a-vis cutting-edge deliverables.</strong></h1>}
+        </FullWidthDiv>
+        <Row style={{padding:'30px 0'}} gutter={16} type='flex' justify='center' align='middle'>
+            <PricingCard type={"standard"} onSelect={e => props.selectCard(1)} key={1} item={1} selected={props.selected===1} data={tierData[0]} cardWidth={7}/>
+            <PricingCard type={"premium"} onSelect={e => props.selectCard(2)} key={2} item={2} selected={props.selected===2} data={tierData[1]} cardWidth={7}/>
+            <PricingCard type={"customised"} onSelect={e => props.selectCard(3)} key={3} item={3} selected={props.selected===3} data={tierData[2]} cardWidth={7}/>
+        </Row>
+      </div>)
+
 
 const FullWidthDiv = (props) =>
     <Row span={props.cardWidth} style={{...props.extraStyles, margin: props.margin?props.margin:'30px 0', padding: props.padding?props.padding:'40px 0', background: props.backgroundColor?props.backgroundColor:'#d9d9d9', textAlign:'center'}} {...props}>
@@ -87,16 +104,3 @@ const FullWidthDiv = (props) =>
 FullWidthDiv.propTypes = {
     backgroundColor: PropTypes.string
 }
-
-
-export default () =>
-      <div className="Pricing" style={{padding:'30px 0'}}>
-        <FullWidthDiv backgroundColor='none' type='flex' justify='center' padding='16px 0' margin='16px 0'>
-            <h1 style={{textAlign:'center', maxWidth: '70%', color: 'rgb(22,85,151)'}}><strong>Dramatically engage top-line web services vis-a-vis cutting-edge deliverables.</strong></h1>
-        </FullWidthDiv>
-        <Row style={{padding:'30px 0'}} gutter={16} type='flex' justify='center' align='bottom'>
-            <PricingCard data={tierData[0]} cardWidth={7}/>
-            <PricingCard data={tierData[1]} cardWidth={7}/>
-            <PricingCard data={tierData[2]} cardWidth={7}/>
-        </Row>
-      </div>

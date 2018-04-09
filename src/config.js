@@ -1,6 +1,7 @@
 export default {
   MAX_ATTACHMENT_SIZE: 100000000,
   s3: {
+    REGION: "ap-southeast-2",
     BUCKET: "spat-app-uploads"
   },
   apiGateway: {

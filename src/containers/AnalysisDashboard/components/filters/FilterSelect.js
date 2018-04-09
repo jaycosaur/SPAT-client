@@ -1,5 +1,5 @@
 import { Select, Row, Icon, Tooltip } from 'antd';
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 const Option = Select.Option;
 
 const children = [];
@@ -12,12 +12,15 @@ function handleChange(value) {
 }
 
 
-export default class FilterSelect extends Component {
+export default class FilterSelect extends PureComponent {
+  handleChange = (value) => {
+    console.log(`selected ${value}`);
+  }
+
   render() {
     return (
         <Row>
           <div style={{textAlign: "left"}}>
-            <span>Title</span>
             <Tooltip title="Clear Filter">
               <span style={{float: "right"}}><Icon type="delete" /></span>
             </Tooltip>
@@ -26,7 +29,7 @@ export default class FilterSelect extends Component {
               mode="multiple"
               style={{ width: '100%' }}
               placeholder="Please select"
-              onChange={handleChange}
+              onChange={this.handleChange}
           >
               {children}
           </Select>

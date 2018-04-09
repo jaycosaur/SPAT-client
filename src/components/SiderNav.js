@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 
-import { Menu, Icon } from 'antd';
+import { Menu, Icon, Badge } from 'antd';
 
 const menuList = [
     {key:"datasets", href:"/", icon:<Icon type="home" />, text:"Home"},
@@ -35,7 +35,7 @@ export default props =>
 const MenuItemContents = (props) =>
   <Fragment>
     <Link to={props.href}>
-      {props.icon}
+        {props.icon}
       <span>{props.text}</span>
     </Link>
   </Fragment>

@@ -25,7 +25,7 @@ export default props =>
               history.push('/login')                        
               
             } else if (e.target.id === 'signup') {
-              history.push('/signup')                                      
+              history.push('/pricing/choose-a-plan')                                      
             }
           }
         }
@@ -53,7 +53,7 @@ export default props =>
       </RouteNavItem>
       <span style={{float:'right', paddingRight: '16px'}}>
         <Button id='login' style={{marginRight: '16px'}} key='login' href='/' type='primary'><Icon type="user" />Login</Button>
-        <Button id='signup' key='signup' href="/signup" type='default'><Icon type="user-add" />Signup</Button>
+        <Button id='signup' key='signup' href="/pricing" type='default'><Icon type="user-add" />Signup</Button>
       </span>
     </Menu>}
   />;

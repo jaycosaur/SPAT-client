@@ -1,16 +1,43 @@
 import React, { Component } from "react";
 import { Form, Icon, Input, Button, Checkbox, Row, message} from 'antd';
-import {
-  CognitoUserPool,
-  AuthenticationDetails,
-  CognitoUser
-} from "amazon-cognito-identity-js";
-
+import { Link } from 'react-router-dom'
+import { Auth } from "aws-amplify"
 import "./Login.css";
 
-import config from "../../config";
-
 const FormItem = Form.Item;
+
+export default class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: false,
+    };
+  }
+
+  handleSubmit = async event => {
+    this.setState({ isLoading: true });  
+    try {
+      await Auth.signIn(event.userName, event.password);
+      this.props.userHasAuthenticated(true);
+      //alert("Logged in");
+    } catch (e) {
+      message.error(e.code + ': ' + e.message)
+      this.setState({ isLoading: false });   
+    }
+  }
+
+  render() {
+    return (
+      <div className="Login" style= {{paddingTop: 100}}>
+        <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", marginBottom: 20}}>
+          <img alt="SPAT Icon" src="SPATICON-white.png" height="150" width="150" />
+        </div>
+        <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", marginBottom: 20}}><h1 style={{color: "white"}}>Login</h1></div>
+        <WrappedNormalLoginForm loading={this.state.isLoading} handleSubmit={this.handleSubmit} />
+      </div>
+    );
+  }
+}
 
 class NormalLoginForm extends React.Component {
   constructor(props) {
@@ -58,10 +85,13 @@ class NormalLoginForm extends React.Component {
             )}
             <a style={{float: 'right'}} className="login-form-forgot" href="/login/resetpassword">Forgot password</a>
           </Row>
-          <Row style={{marginTop: '16px'}}>
-            <Button loading={this.props.loading} style={{width:'100%'}} size='large' htmlType="submit" className="login-form-button">
+          <Row style={{marginTop: '16px'}} justify="space-between" type="flex">
+            <Button icon="user" loading={this.props.loading} style={{width:'45%'}} size='large' htmlType="submit" className="login-form-button">
               Log in
             </Button>
+            <Link style={{width:'45%'}} to="/pricing/choose-a-plan"><Button icon="user-add" ghost style={{width:'100%'}} size='large' className="login-form-button">
+              Signup
+            </Button></Link>
           </Row>
         </FormItem>
       </Form>
@@ -70,52 +100,3 @@ class NormalLoginForm extends React.Component {
 }
 
 const WrappedNormalLoginForm = Form.create()(NormalLoginForm);
-
-export default class Login extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isLoading: false,
-    };
-  }
-
-  login(email, password) {
-    const userPool = new CognitoUserPool({
-      UserPoolId: config.cognito.USER_POOL_ID,
-      ClientId: config.cognito.APP_CLIENT_ID
-    });
-    const user = new CognitoUser({ Username: email, Pool: userPool });
-    const authenticationData = { Username: email, Password: password };
-    const authenticationDetails = new AuthenticationDetails(authenticationData);
-  
-    return new Promise((resolve, reject) =>
-      user.authenticateUser(authenticationDetails, {
-        onSuccess: result => resolve(),
-        onFailure: err => reject(err)
-      })
-    );
-  }
-
-  handleSubmit = async event => {
-    this.setState({ isLoading: true });    
-    try {
-      await this.login(event.userName, event.password);
-      this.props.userHasAuthenticated(true);
-    } catch (e) {
-      message.error(e.code + ': ' + e.message)
-      this.setState({ isLoading: false });      
-    }
-  }
-
-  render() {
-    return (
-      <div className="Login" style= {{paddingTop: 100}}>
-        <div className="text-center" style={{marginBottom: 50}}>
-          <img alt="SPAT Icon" src="SPATICON-white.png" height="150" width="150" />
-        </div>
-        <WrappedNormalLoginForm loading={this.state.isLoading} handleSubmit={this.handleSubmit} />
-      </div>
-    );
-  }
-}

@@ -1,9 +1,14 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import ReactHighcharts from 'react-highcharts'
 
-export default class BarChart extends Component {
+export default class BarChart extends PureComponent {
   render() {
     let chartData = this.props.data
+    chartData = chartData.filter(item => item['Total Spend']>0)
+    chartData = chartData.sort((a,b) => b['Total Spend']-a['Total Spend'])
+    let categories = chartData.map(item => item.catlevel1)
+    let series = chartData.map(item => parseFloat(item['Total Spend']))
+
     var formatter = new Intl.NumberFormat('en-US', {
     });
 
@@ -12,6 +17,16 @@ export default class BarChart extends Component {
             type: 'column',
             events: {
                 click: e => this.props.actions({eventType: "deselect", type: "category"})
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            column: {
+                dataLabels: {
+                    enabled: false
+                }
             }
         },
         exporting: {
@@ -27,13 +42,13 @@ export default class BarChart extends Component {
             fallbackToExportServer: false
         },
         title: {
-            text: 'Spend over Mega Categories'
+            text: 'SPEND OVER MEGACATEGORIES'
         },
         colors: [
             'rgb(159,193,69)'
         ],
         xAxis: {
-            categories: chartData[0]
+            categories: categories
         },
         yAxis: [{
             title: {
@@ -42,18 +57,20 @@ export default class BarChart extends Component {
         }],
         tooltip: {
             formatter: function () {
-                return this.point.x +" : "+formatter.format(this.point.y);
+                return this.point.category +" : "+formatter.format(this.point.y);
             }
         },
         series: [{
             name: 'Spend per Category',
             animation:false,
-            data: chartData[1],
+            data: series,
             point: {
                 events: {
                     click: e => this.props.actions({eventType: "select", type: "category", value: e})
                 }
-            }
+            },
+            pointPadding: 0,
+            groupPadding: 0.1
         }],
     };
 

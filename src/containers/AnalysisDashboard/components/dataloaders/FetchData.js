@@ -1,5 +1,5 @@
 import { PureComponent } from 'react'
-import { invokeApig } from "./../../../../libs/awsLib";
+import { API } from "aws-amplify";
 
 export default class FetchData extends PureComponent {
   state = {
@@ -13,12 +13,11 @@ export default class FetchData extends PureComponent {
   }
 
   fetch = async() => {
-    invokeApig({path: this.props.path})
+    API.get("spat", this.props.path)
       .then(res => this.setState({data: res, isFetching: false}))
-      .then(e => console.log('fetched @ '+this.props.path))
       .catch(e => {
         this.setState({isError: e})
-        console.log('failed @ '+this.props.path)
+        console.log('failed @ '+this.props.path, {e})
       })
   }
 
