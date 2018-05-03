@@ -4,9 +4,11 @@ import ReactHighcharts from 'react-highcharts'
 export default (props) => {
     const config = {
         chart: {
-            type: 'areaspline',
+            type: 'area',
+            zoomType: 'x',
             events: {
-                click: e => this.props.actions({eventType: "deselect", type: "date"})
+                click: e => props.handleDeselect(e),
+                selection: e => props.handleSelect([e.xAxis[0].min,e.xAxis[0].max])
             }
         },
         exporting: {
@@ -22,32 +24,90 @@ export default (props) => {
             fallbackToExportServer: false
         },
         title: {
-            text: 'SPEND OVER TIME'
+            text: 'Spend Over Time'
         },
         colors: [
             'rgb(159,193,69)'
         ],
         xAxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            type: 'datetime'
         },
         yAxis: [{
             title: {
-                text: 'Spend (Millions)'
+                text: 'Spend ($AUD)'
             }
         }],
         series: [{
-            animation:false,
-            name: 'Spend Over Time',
-            data: [29.9, 71.5, 306.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 295.6, 454.4],
+            name: 'Daily Spend',
+            data: props.data,
             point: {
                 events: {
-                    click: e => this.props.actions({eventType: "select", type: "date", value: e})
+                    click: e => props.handleSelect([e.point.category])
                 }
             }
         }]
     };
-
     return (
         <ReactHighcharts config = {config} />
     )
   }
+
+  /*
+
+        chart: {
+                zoomType: 'x'
+            },
+            title: {
+                text: 'USD to EUR exchange rate over time'
+            },
+            subtitle: {
+                text: document.ontouchstart === undefined ?
+                        'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+            },
+            xAxis: {
+                type: 'datetime'
+            },
+            yAxis: {
+                title: {
+                    text: 'Exchange rate'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    },
+                    marker: {
+                        radius: 2
+                    },
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    threshold: null
+                }
+            },
+
+            series: [{
+                type: 'area',
+                name: 'USD to EUR',
+                data: data
+            }]
+
+
+
+  */

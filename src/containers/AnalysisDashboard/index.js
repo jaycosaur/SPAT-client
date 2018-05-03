@@ -1,40 +1,23 @@
-import React, { PureComponent } from "react";
-import { Tag, Popover, Avatar, Affix, Card } from 'antd';
-import { DashboardProvider, DashboardConsumer } from './store/'
+import React, { Component } from "react";
+import { connect } from 'react-redux'
+import { setDatasetId, fetchDatasetInformation } from './../../store/actions/dashboardActions'
 
 import View from './view'
+import FilterPopover from './FilterPopover'
 
-export default class AnalysisDashboard extends PureComponent {
+import ReactHighcharts from 'react-highcharts'
+require('highcharts-exporting')(ReactHighcharts.Highcharts) // raise this up to index
+require('highcharts-offline-exporting')(ReactHighcharts.Highcharts) // raise this up to index
+
+class AnalysisDashboard extends Component {
     state={
         activeFilters: [],
         isFullScreen: false
     }
-    handleClick = (e) => {
-        if (e.eventType === "select"){
-            this.setState({
-                activeFilters: [ ...this.state.activeFilters, [e.type,e.value,e.type + ": "+ e.value]]
-            })
-        } else if (e.eventType === "deselect"){
-            this.setState({
-                activeFilters: this.state.activeFilters.filter(item => item[0]!==e.type)
-            })
-        }   
-    }
-    toggleFullScreen = () => {
-        this.setState((state) => {return {isFullScreen: !state.isFullScreen}})
-    }
-    closeHandler = (e) => {
-        let arr = this.state.activeFilters
-        arr.splice(e,1)
-        this.setState({
-            activeFilters: arr
-        })
-    }
 
     componentDidMount() {
-        this.setState({
-            datasetId: this.props.match.params.id
-        })
+        this.props.dispatch(setDatasetId(this.props.match.params.id))
+        this.props.dispatch(fetchDatasetInformation(this.props.match.params.id))
     }
 
     render() {
@@ -42,42 +25,25 @@ export default class AnalysisDashboard extends PureComponent {
             position: "absolute",
             left: 0,
             top: 0,
-            background: "#f0f2f5"
+            background: "#f0f2f5",
+            minHeight: "100vh",
+            maxWidth: "100%",
+            marginTop: 64
         }
         return (
-            <div className="AnalysisDashboard" style={this.state.isFullScreen?fullScreenStyle:{}}>
-                <DashboardProvider>
-                    <DashboardConsumer>
-                        { context =>
-                            <FilterPopover
-                                activeFilters={context.filter.category} 
-                                actions={context.actions}/>
-                        }
-                    </DashboardConsumer>
-                    <DashboardConsumer>
-                        { context =>
-                            <View toggleFullScreen={this.toggleFullScreen} isFullScreen={this.state.isFullScreen} datasetId={this.state.datasetId} actions={context.actions}/>
-                        }
-                    </DashboardConsumer>
-                </DashboardProvider>
+            <div className="AnalysisDashboard" style={this.props.dashboard.fullscreen?fullScreenStyle:{}}>
+                <FilterPopover/>    
+                <View />
             </div>
         )
     }
 }
 
-const FilterContent = (props) =>
-            <div style={{width: 140}}>
-                {props.activeFilters.length>0&&props.activeFilters.map((item, key) =>
-                    <Tag key={key} closable onClose={e => {e.preventDefault();props.closeHandler({type:'category', index: key})}}>{item}</Tag>
-                )}
-            </div>
+export default connect((store) => {
+    return {
+        dashboard: store.dashboard
+    }
+    })(AnalysisDashboard)
 
-const FilterPopover = (props) =>
-            !props.activeFilters.length>0
-                ?
-                <Avatar size="large" icon="filter" style={{ backgroundColor: 'gray', position: "fixed", zIndex: 100, right: 0, top: 0, marginRight: 10, marginTop: 10 }}/>
-                :
-                <Popover content={<FilterContent activeFilters={props.activeFilters} closeHandler={props.actions.categoryDeselect}/>} placement="leftTop">
-                    <Avatar size="large" icon="filter" style={{ border: "solid 1px #fff", backgroundColor: '#a0cf67', position: "fixed", zIndex: 100, right: 0, top: 0, marginRight: 10, marginTop: 10 }}/>
-                </Popover>
+
 

@@ -10,6 +10,8 @@ import {
 } from "amazon-cognito-identity-js";
 import config from "../../config";
 
+import tierData from './tierData'
+
 const FormItem = Form.Item;
 
 class SignupInformationForm extends React.Component {
@@ -279,7 +281,7 @@ export default class Signup extends Component {
       UserPoolId: config.cognito.USER_POOL_ID,
       ClientId: config.cognito.APP_CLIENT_ID
     });
-
+    /*
     var dataGivenName = {
       Name : 'given_name',
       Value : givenName
@@ -303,7 +305,7 @@ export default class Signup extends Component {
     var attributeOrganisation = new CognitoUserAttribute(dataOrganisation);
 
     var attributeList = [attributeGivenName, attributeFamilyName, attributePhoneNumber, attributeOrganisation];
-  
+    */
     return new Promise((resolve, reject) =>
       userPool.signUp(email, password, [], null, (err, result) => {
         if (err) {
@@ -380,8 +382,23 @@ export default class Signup extends Component {
     );
   }
 
+  planData(keyword){
+    switch(keyword){
+      case "standard":
+        return tierData[0]
+      case "premium":
+        return tierData[1]
+      case "tailored":
+        return tierData[2]
+      default:
+        return tierData[0]
+      }
+  }
+
   render() {
     const planType = this.props.match.params.plan
+
+    const tierDataSelected = this.planData(planType)
 
     const SignupPageContainer = (props) => (
       <div className="Signup" style={{paddingBottom: 20, minHeight: "100vh"}}>
@@ -391,13 +408,13 @@ export default class Signup extends Component {
               <div style={{display: "flex", justifyContent: "space-between", alignItems:"center"}}>
                 <span>
                   <span style={{color: "#54b948", fontSize:"20px", fontWeight:'500', position: 'relative', top: '-20px'}}>$</span>
-                  <span style={{color: "#54b948", fontSize:"48px"}}>{"1,299"}</span>
-                  <span style={{color: "#54b948", fontSize:"20px", fontWeight:'500', position: 'relative', top: '-20px'}}> month</span>
+                  <span style={{color: "#54b948", fontSize:"48px"}}>{tierDataSelected.price}</span>
+                  <span style={{color: "#54b948", fontSize:"20px", fontWeight:'500', position: 'relative', top: '-20px'}}> {tierDataSelected.unit||"month"}</span>
                 </span>
                 <div style={{marginLeft: 30, marginRight: 30}}>
-                  <h1 style={{margin: 0}}>Premium Plan</h1>
+                  <h1 style={{margin: 0}}>{tierDataSelected.title} Plan</h1>
                 </div>
-                <h4 style={{margin: 0}}>Unlimited reports and expert consultant analysis</h4>
+                <h4 style={{margin: 0}}>{tierDataSelected.subtitle}</h4>
               </div>
               <div style={{display: "flex", justifyContent: "space-between", alignItems:"center", flexDirection: "column"}}>
                 <Link to="/pricing/choose-a-plane"><Button ghost size="large" type="primary" shape="circle" icon="wallet" /></Link>

@@ -11,7 +11,7 @@ export default () => {
           if (data){
             dataWrang = data.header.map((item,i) => {return {title: item.toUpperCase(), value: data.data[0][item], accounting: i===0?true:false}})
           }
-          return <CardContainer loading={isFetching} itemWidth="25%" data={dataWrang}/>
+          return <CardContainer isFetching={isFetching} itemWidth="25%" data={dataWrang}/>
         }              
       }
     </FetchData>

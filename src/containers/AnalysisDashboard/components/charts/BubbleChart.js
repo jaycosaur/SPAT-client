@@ -9,7 +9,7 @@ export default class BubbleChart extends PureComponent {
         chart: {
             type: 'bubble',
             events: {
-                click: e => this.props.actions({eventType: "deselect", type: "supplier"})
+                click: e => this.props.handleDeselect(e)
             }
         },
         boost: {
@@ -24,7 +24,7 @@ export default class BubbleChart extends PureComponent {
             text: 'CLUSTERS OF SUPPLIERS (RED ARE OUTLIERS)'
         },
         colors: [
-            'rgb(159,193,69)'
+            
         ],
         
         xAxis: {
@@ -53,20 +53,44 @@ export default class BubbleChart extends PureComponent {
         },
         series: [{
             animation:false,
-            data: this.props.data.map(item => {
+            data: this.props.data.filter(i => !i.isOutlier).map(item => {
                 const obj = {
                     x: item.numberInvoices,
                     y: item.totalInvoices,
+                    label: item.organisation,
                     z: 1,            
                 }
                 return obj
             }),
             point: {
                 events: {
-                    click: e => this.props.actions({eventType: "select", type: "supplier", value: e})
+                    click: e => this.props.handleSelect(e)
+                }
+            },
+            color: 'rgb(159,193,69)'
+        },
+        {
+            animation:false,
+            data: this.props.data.filter(i => i.isOutlier).map(item => {
+                const obj = {
+                    x: item.numberInvoices,
+                    y: item.totalInvoices,
+                    label: item.organisation,
+                    z: 1,            
+                }
+                return obj
+            }),
+            point: {
+                events: {
+                    click: e => this.props.handleSelect(e)
                 }
             }
-        }]
+            ,
+            color: "red"
+        }
+    
+    
+    ]
     }
     return (
         <ReactHighcharts config = {config} />

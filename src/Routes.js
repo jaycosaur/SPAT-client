@@ -7,13 +7,12 @@ import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
 
 import Home from "./containers/Home";
-import Features from "./containers/Features"
 import Pricing from "./containers/Pricing/"
 import NotFound from "./containers/NotFound";
 import ServerError from "./containers/ServerError"
-import Login from "./containers/Login/";
-import Signup from "./containers/Signup/";
-import ResetPassword from "./containers/ResetPassword/";
+import Login from "./containers/Login/"
+import Signup from "./containers/Signup/"
+import ResetPassword from "./containers/ResetPassword/"
 import SlowLoader from './components/SlowLoading'
 
 const MyLoadingComponent = ({isLoading, error}) => {
@@ -73,7 +72,7 @@ export default ({ childProps }) =>
     <UnauthenticatedRoute key='about' path="/about" signupPath exact component={SlowLoader} props={childProps} />
 
     <AuthenticatedRoute key={'analysisdashboard'} path="/analysisdashboard" exact component={AsyncAnalysisDashboardSelectView} props={childProps} />
-    <AuthenticatedRoute key={'analysisdashboard'} path="/analysisdashboard/:id" exact component={AsyncAnalysisDashboard} props={childProps} />
+    <AuthenticatedRoute key={'analysisdashboard'} path="/analysisdashboard/:id" component={AsyncAnalysisDashboard} props={childProps} />
     <AuthenticatedRoute key={'upload'} path="/datasets/upload" exact component={AsyncNewUpload} props={childProps} />
     <AuthenticatedRoute key={'dataset'} path="/datasets/:id" exact component={AsyncDatasets} props={childProps} />
     <AuthenticatedRoute key={'contact'} path="/contact" exact component={AsyncContact} props={childProps} />

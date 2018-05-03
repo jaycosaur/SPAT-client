@@ -3,6 +3,7 @@ import { Form, Icon, Input, Button, Checkbox, Row, message} from 'antd';
 import { Link } from 'react-router-dom'
 import { Auth } from "aws-amplify"
 import "./Login.css";
+import Particles from 'particlesjs'
 
 const FormItem = Form.Item;
 
@@ -26,14 +27,34 @@ export default class Login extends Component {
     }
   }
 
+  componentDidMount(){
+    this.particles = Particles.init({
+      selector: '.background',
+      color: ['#fff'],
+      connectParticles: false,
+      sizeVariations: 3,
+      responsive: [{
+        breakpoint: 800,
+        options: {
+          color: '#00C9B1',
+          maxParticles: 300,
+          connectParticles: false,
+        }
+      }]
+    });
+  }
+
   render() {
     return (
       <div className="Login" style= {{paddingTop: 100}}>
-        <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", marginBottom: 20}}>
-          <img alt="SPAT Icon" src="SPATICON-white.png" height="150" width="150" />
+        <canvas className="background" style={{position: "absolute", left:0, top:0, right:0, bottom: 0, zIndex: 0}}/>
+        <div style={{zIndex: 10}}>
+          <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", marginBottom: 20}}>
+            <img alt="SPAT Icon" src="SPATICON-white.png" height="150" width="150" />
+          </div>
+          <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", marginBottom: 20}}><h1 style={{color: "white"}}>Login</h1></div>
+          <WrappedNormalLoginForm loading={this.state.isLoading} handleSubmit={this.handleSubmit} />
         </div>
-        <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", marginBottom: 20}}><h1 style={{color: "white"}}>Login</h1></div>
-        <WrappedNormalLoginForm loading={this.state.isLoading} handleSubmit={this.handleSubmit} />
       </div>
     );
   }

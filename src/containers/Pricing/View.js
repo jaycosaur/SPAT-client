@@ -4,36 +4,14 @@ import { Link } from 'react-router-dom'
 
 import { List, Button, Card, Row, Col, Icon } from 'antd';
 
-const tierData = [
-    {
-        'title':'Standard',
-        'price': '599',
-        'subtitle': 'Powerful features and monthly uploads',
-        'points': [true, true, false, false],
-        'isPopular': false,
-        'condition': 'Month to Month Plan'
-    },
-    {
-        'title':'Premium',
-        'price': '1,299',
-        'subtitle': 'Unlimited reports and expert consultant analysis',
-        'points': [true, true, true, false],
-        'isPopular': true,
-        'condition': 'Month to Month Plan'
-    },
-    {
-        'title':'Customised',
-        'price': '2,499',
-        'subtitle': 'All features, support and customised reports',
-        'points': [true, true, true, true],
-        'isPopular': false,
-        'condition': 'Minimum 12 month plan'
-    },
-]
+import tierData from './tierData'
+
 const data = [
     'Classification of data through AI',
     'Access to analytics tools',
+    'Trend analysis',
     'One-on-one expert analysis',
+    'Early access features',
     'Customised reports',
   ];
 
@@ -53,7 +31,7 @@ const PricingCard = (props) =>
                     <span>
                         <span style={{fontSize:"30px", fontWeight:'500', position: 'relative', top: '-20px'}}>$</span>
                         <span style={{fontSize:"58px"}}>{props.data.price}</span>
-                        <span style={{ fontSize:"30px", fontWeight:'500', position: 'relative', top: '-20px'}}> month</span>
+                        <span style={{ fontSize:"30px", fontWeight:'500', position: 'relative', top: '-20px'}}> {props.data.unit||"month"}</span>
                     </span>
                 </Row>
                 <h4 style={{paddingTop: '10px', color: 'rgb(159,193,69)'}}>{props.data.subtitle}</h4>
@@ -74,7 +52,7 @@ const PricingCard = (props) =>
                 />
             </Row>
             {props.selected&&<Row style={{textAlign:'center'}}>
-                <Link to={`/signup/${props.type}`}><Button icon="user-add" style={{marginTop: '30px', marginBottom: '30px', width: 200}} size='large' type='primary'>Choose Plan</Button></Link>
+                <Link to={`/signup/${props.type}`}><Button icon="user-add" style={{marginTop: '30px', marginBottom: '30px', width: 250}} size='large' type='primary'>Choose {props.data.title} Plan</Button></Link>
                 <h4>{props.data.condition}</h4>
             </Row>}
         </Card>
@@ -91,7 +69,7 @@ export default (props) =>(
         <Row style={{padding:'30px 0'}} gutter={16} type='flex' justify='center' align='middle'>
             <PricingCard type={"standard"} onSelect={e => props.selectCard(1)} key={1} item={1} selected={props.selected===1} data={tierData[0]} cardWidth={7}/>
             <PricingCard type={"premium"} onSelect={e => props.selectCard(2)} key={2} item={2} selected={props.selected===2} data={tierData[1]} cardWidth={7}/>
-            <PricingCard type={"customised"} onSelect={e => props.selectCard(3)} key={3} item={3} selected={props.selected===3} data={tierData[2]} cardWidth={7}/>
+            <PricingCard type={"tailored"} onSelect={e => props.selectCard(3)} key={3} item={3} selected={props.selected===3} data={tierData[2]} cardWidth={7}/>
         </Row>
       </div>)
 

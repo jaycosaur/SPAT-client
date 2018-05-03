@@ -1,21 +1,20 @@
 import React from 'react'
-import DatasetContainer from './components/DatasetContainer'
 import DatasetList from './components/DatasetList'
-import { Row , Col } from 'antd'
+import { Row , Col, Card } from 'antd'
 
 export default (props) =>
   <div className="datasets">
-    <Row>
+    <Row style={{ margin: '24px 16px' }} gutter={16}>
       <Col span={18}>
-        <div style={{ margin: '24px 16px', display: "flex", flexWrap: "wrap", justifyContent: "space-evenly" }}>
+        <Card title="Your Completed Datasets">
           <DatasetList {...props} />
-        </div>
+        </Card>
       </Col>
       <Col span={6}>
-        <div style={{ margin: '24px 16px', display: "flex", flexWrap: "wrap", justifyContent: "space-evenly" }}>
-          <DatasetContainer {...props} />
-        </div>
+        <Card title="Helpful hints" span={6}>
+          Helpful hints / news delivered by CMS
+        </Card>
       </Col>
-    </Row>
-    
+    </Row>  
   </div>
+  

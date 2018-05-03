@@ -9,7 +9,7 @@ export default (props) => {
         chart: {
             type: 'column',
             events: {
-                click: e => props.actions.categoryDeselectAll()
+                click: e => props.handleDeselect(e)
             }
         },
         legend: {
@@ -59,7 +59,7 @@ export default (props) => {
             data: props.data.series,
             point: {
                 events: {
-                    click: e => props.actions.categorySelect({eventType: "select", type: "category", value: e})
+                    click: e => props.handleSelect(e)
                 }
             },
             pointPadding: 0,

@@ -1,14 +1,9 @@
 import React, { Component } from "react";
-import {
-  FormGroup,
-  FormControl,
-  ControlLabel,
-} from "react-bootstrap";
 
 import { Row, Col, Card, Icon } from 'antd'
-
-import LoaderButton from "../../../components/LoaderButton";
 import { resetPassword } from "../../../libs/awsLib";
+
+import ChangePassword from './../components/ChangePassword'
 
 export default class MyProfile extends Component {
   constructor(props) {
@@ -43,11 +38,6 @@ export default class MyProfile extends Component {
     }
   }
 
-  passwordsMatch() {
-    if ((this.state.confirmPassword.length > 0) && (this.passwordCriteria() !== "error") && (this.state.password === this.state.confirmPassword)) return 'success';
-    else if (this.state.confirmPassword.length > 0) return 'error';
-  }
-
   handleChange = event => {
     this.setState({
       [event.target.id]: event.target.value
@@ -57,51 +47,9 @@ export default class MyProfile extends Component {
   handleSubmit = async event => {
     event.preventDefault();
     this.setState({ isLoading: true });
-    await resetPassword(this.state.oldPassword, this.state.password);
+    await resetPassword(event.password, event.newpassword);
     this.setState({ isLoading: false });
     alert("Successfully changed password!");    
-    this.props.history.push("/");    
-  }
-
-  renderForm() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <FormGroup controlId="oldPassword" bsSize="lg">
-          <ControlLabel>Old Password</ControlLabel>
-          <FormControl
-            value={this.state.oldPassword}
-            onChange={this.handleChange}
-            type="password"
-            data-dpmaxz-eid="2"
-          />
-        </FormGroup>
-        <FormGroup controlId="password" bsSize="lg" validationState={this.passwordCriteria()}>
-          <ControlLabel>New Password</ControlLabel>
-          <FormControl
-            value={this.state.password}
-            onChange={this.handleChange}
-            type="password"
-          />
-        </FormGroup>
-        <FormGroup controlId="confirmPassword" bsSize="lg" validationState={this.passwordsMatch()}>
-          <ControlLabel>Confirm New Password</ControlLabel>
-          <FormControl
-            value={this.state.confirmPassword}
-            onChange={this.handleChange}
-            type="password"
-          />
-        </FormGroup>
-        <LoaderButton
-          block
-          bsSize="large"
-          disabled={!this.validateForm()}
-          type="submit"
-          isLoading={this.state.isLoading}
-          text="Change Password"
-          loadingText="Changing…"
-        />
-      </form>
-    );
   }
 
   renderUserInfo() {
@@ -116,11 +64,11 @@ export default class MyProfile extends Component {
         <Row gutter={16}>
           <Col xs={24} md={12}>
             <ContainerCard title="Profile Information" extra={<Icon type="idcard" />}>{this.renderUserInfo()}</ContainerCard>
-            <ContainerCard title="Subscription Information" extra={<Icon type="wallet" />}>{this.renderUserInfo()}</ContainerCard>
-            <ContainerCard title="Billing Information" extra={<Icon type="bank" />}>{this.renderUserInfo()}</ContainerCard>
           </Col>
           <Col xs={24} md={12}>
-            <ContainerCard title="Change Password" extra={<Icon type="lock" />}>{this.renderForm()}</ContainerCard>
+            <ContainerCard title="Change Password" extra={<Icon type="lock" />}>
+              <ChangePassword isLoading={this.state.isLoading} handleSubmit={this.handleSubmit}/>
+            </ContainerCard>
           </Col>
         </Row>
       </div>

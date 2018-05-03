@@ -14,29 +14,6 @@ import FilterContainer from './../components/filters/FilterContainer'
 
 import SummaryQueryCard from './../containers/infocards/SummaryQueryCard'
 
-const inputData1 = [
-    {
-        title: "TOTAL SPEND",
-        value: 1592125.34,
-        accounting: true
-    },
-    {
-        title: "# SUPPLIERS",
-        value: 3892,
-        accounting: true
-    },
-    {
-        title: "# TRANSACTIONS",
-        value: 53239,
-        accounting: true
-    },
-    {
-        title: "# PURCHASE ORDERS",
-        value: 23913,
-        accounting: true
-    },
-]
-
 const inputData2 = [
     {
         title: "TOTAL SPEND",
@@ -81,7 +58,7 @@ const inputData2 = [
 ]
 
 export default (props) => 
-            <div>
+            <React.Fragment>
                 <RowContainer key="upper-cards">
                     <SummaryQueryCard actions={props.actions}/>
                 </RowContainer>
@@ -95,7 +72,7 @@ export default (props) =>
                     <Col span={12} style={{padding: 0}}>
                         <CardContainer itemWidth="50%" data={inputData2}/>
                     </Col>
-                    <Col span={12} style={{padding: 0, height: "100%"}}>
+                    <Col span={12} style={{padding: 0}}>
                         <DotChartVendor />
                     </Col>
                 </RowContainer>
@@ -108,4 +85,4 @@ export default (props) =>
                 <RowContainer key="supplier-summary-table">
                     <TableInvoicePo />
                 </RowContainer>
-            </div>
+            </React.Fragment>

@@ -1,8 +1,11 @@
 import React from 'react'
 import { List, Avatar, Button } from 'antd'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 
-export default (props) => {
+import { setDatasetId } from './../../../store/actions/dashboardActions'
+
+const DatasetList = (props) => {
     const computeAvatarStyle = (state) => {
       if(state === "Pending Processing"){
         return "#ffd666"
@@ -59,3 +62,10 @@ export default (props) => {
           />
     );
   }
+
+  export default connect((store) => {
+    return {
+        dashboard: store.dashboard
+    }
+    })(DatasetList)
+

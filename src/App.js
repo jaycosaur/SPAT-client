@@ -8,10 +8,15 @@ import SiderNav from "./components/SiderNav";
 import TopNav from "./components/TopNav";
 import FooterComponent from "./components/Footer"
 
-import { Layout, Icon, Spin, Row, BackTop, Alert, Input, Button} from 'antd';
+import { Layout, Icon, Spin, Row, BackTop, Alert, Button, Tooltip } from 'antd';
+
 const { Header, Sider, Content } = Layout;
 
 export const AppContext = createContext()
+
+
+// sub components
+
 
 class App extends Component {
   constructor(props) {
@@ -83,10 +88,12 @@ class App extends Component {
     };
 
     const headerStyle = { 
-      background: 'linear-gradient(to right, rgb(22,85,151), #1a9ed9,rgb(159,193,69))', 
+      background: '#fff', 
       paddingLeft: '16px', 
-      color: '#fff', 
-      borderRadius: '0 0 32px 0'
+      color: '#000', 
+      borderRadius: '0 0 32px 0',
+      border: "1px solid #a0cf67",
+      borderWidth: "0 1px 1px 0"
     }
 
     /*const headerStyle = { 
@@ -95,39 +102,46 @@ class App extends Component {
       color: '#fff', 
       borderRadius: '0 0 32px 0'*/
           
-class HeaderBar extends Component {
-  constructor(props){
-    super(props)
-    this.state = {
-      isFocused: false,
-      isHovered: false
+    class HeaderBar extends Component {
+      constructor(props){
+        super(props)
+        this.state = {
+          isFocused: false,
+          isHovered: false
+        }
+      }
+
+      toggleHover = () => {
+        this.setState((state) => {return {isHovered: !state.isHovered}})
+      }
+
+      render() {
+        return (
+          <Header 
+              style={headerStyle}
+              >
+            <span style={{float: "right"}}>
+              <Tooltip placement="bottomLeft" title={<span>Need to call us?</span>}>
+                <Button shape="circle" icon="phone" size="large" style={{color: "#a0cf67", background: "white", border: "1px solid #a0cf67", marginRight: "0.5em"}}/>
+              </Tooltip>
+              <Tooltip placement="bottom" title={<span>Have a question?</span>}>
+                <Button shape="circle" icon="question" size="large" style={{color: "#a0cf67", background: "white", border: "1px solid #a0cf67", marginRight: "0.5em"}}/>
+              </Tooltip>
+              <Tooltip placement="bottomRight" title={<span>Tell us about an issue?</span>}>
+                <Button shape="circle" icon="warning" size="large" style={{color: "#a0cf67", background: "white", border: "1px solid #a0cf67"}}/>
+              </Tooltip>
+            </span>
+            <Row>
+              <span style={{fontSize: "1.2em"}}>{"Spend Analysis Tool".toUpperCase()}</span> <span>Making spend analysis fast, easy and accurate.</span>
+            </Row>
+          </Header>
+        )
+      }
     }
-  }
-
-  toggleHover = () => {
-    this.setState((state) => {return {isHovered: !state.isHovered}})
-  }
-
-  render() {
-    return (
-      <Header 
-          style={headerStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover}>
-      <span style={{float: "right"}}>
-        {!this.state.isHovered?<Button shape="circle" icon="search" />:<Input.Search enterButton placeholder="input search text" />}
-      </span>
-      <Row>
-            <span>Spend Analytics Tool </span>
-          </Row>
-        </Header>
-    )
-  }
-}
   
     const LayoutContainer = (props) => 
       <Layout style={{ marginLeft: 80, minHeight: '100vh' }}>
-        {
-          <HeaderBar />
-          }
+        {<HeaderBar />}
         <Content>
           <Routes childProps={childProps} />
         </Content>

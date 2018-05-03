@@ -1,5 +1,5 @@
 import React from 'react'
-import { Icon } from 'antd'
+import { Avatar, Tooltip } from 'antd'
 
 const leftStyle = {
     left: 0, 
@@ -11,13 +11,19 @@ const rightStyle = {
 }
 
 export default (props) =>
-    <Icon 
-        type={props.isFetching?'loading':'check-circle'} 
-        style={{
-            zIndex: 50, 
-            color: '#95de64', 
-            position: "absolute", 
-            display: "block",
-            margin: 16,
-            ...props.right?rightStyle:leftStyle
-            }}/>
+  <Tooltip title="Click to refresh chart">
+        <Avatar 
+            icon={props.isFetching?'loading':props.isError?'cross':'check'} 
+            onClick={props.onClick}
+            size="small"
+            style={{
+                zIndex: 50, 
+                background: props.isError?"red":"#95de64",
+                color: '#fff', 
+                position: "absolute", 
+                display: "block",
+                margin: 16,
+                cursor: "pointer",
+                ...props.right?rightStyle:leftStyle
+                }}/>
+    </Tooltip>

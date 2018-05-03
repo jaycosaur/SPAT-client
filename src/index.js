@@ -6,6 +6,17 @@ import registerServiceWorker from "./registerServiceWorker";
 import Amplify from "aws-amplify"
 import config from './config'
 
+// Redux related 
+
+import { syncHistoryWithStore } from 'react-router-redux'
+import { browserHistory } from 'react-router'
+import store from './store/store'
+import { Provider } from "react-redux"
+
+
+syncHistoryWithStore(browserHistory, store)
+//const history = syncHistoryWithStore(browserHistory, store)
+
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
@@ -31,9 +42,11 @@ Amplify.configure({
 });
 
 ReactDOM.render(
-  <Router onUpdate={() => window.scrollTo(0, 0)}>
-    <App />
-  </Router>,
+  <Provider store={store}>
+    <Router onUpdate={() => window.scrollTo(0, 0)}>
+      <App />
+    </Router>
+    </Provider>,
   document.getElementById("root")
 );
 registerServiceWorker();

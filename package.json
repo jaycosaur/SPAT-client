@@ -12,6 +12,7 @@
     "highcharts": "^6.0.4",
     "highcharts-exporting": "^0.1.2",
     "highcharts-offline-exporting": "^0.1.2",
+    "particlesjs": "^2.2.2",
     "react": "^16.3.0",
     "react-bootstrap": "^0.31.3",
     "react-d3-basic": "^1.6.11",
@@ -23,10 +24,18 @@
     "react-moment": "^0.7.0",
     "react-progress": "0.0.12",
     "react-recaptcha": "^2.3.7",
+    "react-redux": "^5.0.7",
+    "react-router": "^3.2.1",
     "react-router-dom": "^4.2.2",
+    "react-router-redux": "^4.0.8",
     "react-scripts": "1.0.13",
     "react-svg": "^2.1.21",
     "react-svg-loader": "^1.1.1",
+    "redux": "^4.0.0",
+    "redux-devtools-extension": "^2.13.2",
+    "redux-logger": "^3.0.6",
+    "redux-promise-middleware": "^5.1.1",
+    "redux-thunk": "^2.2.0",
     "victory": "^0.24.0"
   },
   "theme": {
@@ -36,6 +45,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
+    "deploy": "aws s3 sync build/ s3://spat-app-client --delete",
     "eject": "react-scripts eject"
   }
 }

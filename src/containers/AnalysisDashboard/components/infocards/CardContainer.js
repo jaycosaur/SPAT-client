@@ -5,7 +5,6 @@ import SingleItem from './SingleItem'
 export default (props) =>
     props.data?
     <Card 
-        hoverable 
         loading={props.isFetching} 
         bodyStyle={{padding: 0}} 
         >
@@ -13,7 +12,6 @@ export default (props) =>
     </Card>
     :
     <Card 
-        hoverable 
         loading={props.isFetching} 
         bodyStyle={{padding: 0}} 
         >

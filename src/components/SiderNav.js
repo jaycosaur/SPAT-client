@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 
-import { Menu, Icon, Badge } from 'antd';
+import { Menu, Icon } from 'antd';
 
 const menuList = [
     {key:"datasets", href:"/", icon:<Icon type="home" />, text:"Home"},
@@ -10,7 +10,6 @@ const menuList = [
     {key:"contact", href:"/contact", icon:<Icon type="message" />, text:"Contact"},
     {key:"profile", href:"/myprofile", icon:<Icon type="user" />, text:"Profile"}
   ]
-
 
 export default props =>
   <Menu>
