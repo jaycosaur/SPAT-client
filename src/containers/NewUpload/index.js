@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./NewUpload.css";
 import config from "../../config";
 import { invokeApig, s3Upload } from "../../libs/awsLib";
+import { API, Storage } from "aws-amplify";
 //import Progress from 'react-progress';
 
 import { Input, Upload, Icon, Card, Row, Button, Progress } from 'antd';
@@ -25,8 +26,7 @@ export default class NewUpload extends Component {
     };
   }
 
-  updateProgress = (dataFromUpload) => {
-       
+  updateProgress = (dataFromUpload) => {   
       this.setState({ uploadProgress: dataFromUpload });
   }
 
@@ -50,7 +50,6 @@ export default class NewUpload extends Component {
 
   handleSubmit = async event => {
     event.preventDefault();
-  
     if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
       alert("Please pick a file smaller than 100MB");
       return;
@@ -59,31 +58,27 @@ export default class NewUpload extends Component {
     this.setState({ isLoading: true });
   
     try {
-      const uploadedFilename = this.file
+      /*const uploadedFilename = this.file
         ? (await s3Upload(this.file, this.updateProgress)).Location
-        : null;
-      const response = await this.createDataset({
+        : null;*/
+      const uploadedFilename = "This is a test filename yall"
+      const content = {
         title: this.state.title,
         description: this.state.description,
         attachment: uploadedFilename
-      });
+      }
+      const response = await API.post("spat", "/datasets", {
+        body: content
+      }) 
       this.setState({
         isComplete: true,
         uploadDataset: response
       })
       console.log(this.state.uploadDataset)
     } catch (e) {
-      alert(e);
+      alert(e)
       this.setState({ isLoading: false });
     }
-  }
-  
-  createDataset(dataset) {
-    return invokeApig({
-      path: "/datasets",
-      method: "POST",
-      body: dataset
-    });
   }
 
   render() {
@@ -95,9 +90,9 @@ export default class NewUpload extends Component {
               <Card 
                 title="Upload Dataset" 
                 style={{marginBottom: '16px', maxWidth: 600}}
-                extra={<Button>Download Data Template<Icon type="cloud-download-o" /></Button>}
+                extra={<a href="https://s3-ap-southeast-2.amazonaws.com/spat-public-files/SPAT-DataTemplatev1.xlsx" target="_blank"><Button>Download Data Template<Icon type="cloud-download-o" /></Button></a>}
                 >
-              {!this.state.isLoading?<form onSubmit={this.handleSubmit}>
+              {!this.state.isLoading?<form>
                   <Row style={{paddingBottom:'16px'}}>
                     <Upload.Dragger action="" name='file' multiple={false} onRemove = {this.handleOnRemove} beforeUpload={this.handleFileChange}>
                       {!this.file && <p className="ant-upload-drag-icon">
@@ -131,6 +126,7 @@ export default class NewUpload extends Component {
                     type="primary"
                     size="large"
                     disabled={!this.validateForm()}
+                    onClick={this.handleSubmit}
                   >Upload</Button>
                 </form>:
                 <div style={{justifyContent: 'center', display: 'flex', flexDirection: 'column'}}>

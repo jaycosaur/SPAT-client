@@ -22,16 +22,12 @@ export default (props) => {
       switch(processState) {
         case "Pending Processing":
           return "solution";
-  
         case "Processing":
           return "calculator";
-  
         case "Processing Complete":
           return "rocket";
-        
         case "Failed":
           return "close-circle-o";
-  
         default:
           return "danger";
       }
@@ -39,7 +35,7 @@ export default (props) => {
   
     return (
           <List
-            loading={props.isLoading}
+            loading={props.isLoadingDatasets}
             itemLayout="horizontal"
             dataSource={props.datasets}
             renderItem={item => (

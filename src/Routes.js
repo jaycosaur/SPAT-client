@@ -13,7 +13,10 @@ import ServerError from "./containers/ServerError"
 import Login from "./containers/Login/"
 import Signup from "./containers/Signup/"
 import ResetPassword from "./containers/ResetPassword/"
-import SlowLoader from './components/SlowLoading'
+
+import RawDatasetExplore from './containers/RawDatasetExplore'
+import Features from './containers/Features'
+import About from './containers/About'
 
 const MyLoadingComponent = ({isLoading, error}) => {
   // Handle the loading state
@@ -59,22 +62,23 @@ const AsyncContact = Loadable({
   loading: MyLoadingComponent
 })
 
-export default ({ childProps }) =>
+export default (childProps) =>
   <Switch>
     <AppliedRoute key={'home'} path="/" exact component={Home} props={childProps} />
-
+    <UnauthenticatedRoute key='features' path="/features" exact component={Features} props={childProps} />
     <UnauthenticatedRoute key='login' path="/login" exact component={Login} props={childProps} />
     <UnauthenticatedRoute key='resetpassword' path="/login/resetpassword" exact component={ResetPassword} props={childProps} />
     <UnauthenticatedRoute key='signup' path="/signup" exact component={Signup} props={childProps} />
     <UnauthenticatedRoute key='signup' path="/signup/:plan" exact component={Signup} props={childProps} />
     <UnauthenticatedRoute key='pricing' path="/pricing" exact component={Pricing} props={childProps} />
-    <UnauthenticatedRoute key='pricing' path="/pricing/:extra" signupPath exact component={Pricing} props={childProps} />
-    <UnauthenticatedRoute key='about' path="/about" signupPath exact component={SlowLoader} props={childProps} />
+    <UnauthenticatedRoute key='pricing-extra' path="/pricing/:extra" signupPath exact component={Pricing} props={childProps} />
+    <UnauthenticatedRoute key='about' path="/about" signupPath exact component={About} props={childProps} />
 
     <AuthenticatedRoute key={'analysisdashboard'} path="/analysisdashboard" exact component={AsyncAnalysisDashboardSelectView} props={childProps} />
-    <AuthenticatedRoute key={'analysisdashboard'} path="/analysisdashboard/:id" component={AsyncAnalysisDashboard} props={childProps} />
+    <AuthenticatedRoute key={'analysisdashboard-specific'} path="/analysisdashboard/:id" exact component={AsyncAnalysisDashboard} props={childProps} />
     <AuthenticatedRoute key={'upload'} path="/datasets/upload" exact component={AsyncNewUpload} props={childProps} />
     <AuthenticatedRoute key={'dataset'} path="/datasets/:id" exact component={AsyncDatasets} props={childProps} />
+    <AuthenticatedRoute key={'dataset-explore'} path="/datasets/:id/explorer" exact component={RawDatasetExplore} props={childProps} />
     <AuthenticatedRoute key={'contact'} path="/contact" exact component={AsyncContact} props={childProps} />
     <AuthenticatedRoute key={'profile'} path="/myprofile" exact component={AsyncProfile} props={childProps} />
 

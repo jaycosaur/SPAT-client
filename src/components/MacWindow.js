@@ -52,26 +52,61 @@ export default (props) =>
 const headerIconStyle = {
     close: {
         background: "rgb(255,95,87)", 
-        border: "1px solid rgb(226, 70, 63)"
+        border: "1px solid rgb(226, 70, 63)",
+        color: "rgb(226, 70, 63)"
     },
     minimize: {
         background: "rgb(255,189,46)", 
-        border: "1px solid rgb(225,161,22)"
+        border: "1px solid rgb(225,161,22)",
+        color: "rgb(225,161,22)"
     },
     maximize: {
         background: "rgb(40,201,64)", 
-        border: "1px solid rgb(18,172,40)"
+        border: "1px solid rgb(18,172,40)",
+        color: "rgb(18,172,40)"
     }
 }
 
-const HeaderIcon = (props) =>
-    <div 
-        style={{
-            boxSizing: "border-box",
-            marginLeft: 4, 
-            marginRight: 4, 
-            lineHeight: 0, 
-            width: 12, 
-            height: 12, 
-            borderRadius: "50%", 
-            ...headerIconStyle[props.type]}} />
+const symbol = {
+    close: "x" ,
+    minimize: "-" ,
+    maximize: "+"
+}
+
+class HeaderIcon extends React.Component {
+    state = {
+        hovered: false
+    }
+    
+    onMouseEnter = () => {
+        this.setState({
+            hovered: true
+        })
+    }
+
+    onMouseLeave = () => {
+        this.setState({
+            hovered: false
+        })
+    }
+    
+    render() {
+        return (
+            <div 
+                onMouseEnter={this.onMouseEnter}
+                onMouseLeave={this.onMouseLeave}
+                style={{
+                    boxSizing: "border-box",
+                    marginLeft: 4, 
+                    marginRight: 4, 
+                    lineHeight: "8px", 
+                    textAlign: "center",
+                    fontSize: "12px",
+                    width: 12, 
+                    height: 12, 
+                    borderRadius: "50%", 
+                    cursor: "default",
+                    ...headerIconStyle[this.props.type]}}>{this.state.hovered&&symbol[this.props.type]}</div>
+        )
+    }
+}

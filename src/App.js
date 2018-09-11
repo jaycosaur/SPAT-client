@@ -1,22 +1,19 @@
-import React, { Component, createContext } from "react";
+import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import "./App.css";
-import { Auth } from 'aws-amplify'
+import * as actions from './store/actions/authActions'
+import { connect } from 'react-redux'
 
 import Routes from "./Routes";
 import SiderNav from "./components/SiderNav";
 import TopNav from "./components/TopNav";
 import FooterComponent from "./components/Footer"
+import AuthHeader from './components/AuthHeader'
 
-import { Layout, Icon, Spin, Row, BackTop, Alert, Button, Tooltip } from 'antd';
+import { Layout, Icon, Spin, BackTop } from 'antd';
+import GetWindowDimensions from './components/GetWindowDimensions'
 
 const { Header, Sider, Content } = Layout;
-
-export const AppContext = createContext()
-
-
-// sub components
-
 
 class App extends Component {
   constructor(props) {
@@ -33,29 +30,9 @@ class App extends Component {
     };
   }
 
-  handleMenuNavClick = (e) => {
-    console.log(e.item.props.href)
-    this.setState({
-      currentLocation: e.key,
-    });
-  }
-
-  async componentDidMount() {
-    try {
-      if (await Auth.currentSession()) {
-        this.userHasAuthenticated(true);
-      }
-    }
-    catch(e) {
-      this.setState({
-        authenticationErrorMessage: e,
-      })
-    }
-    this.setState({ isAuthenticating: false });
-  }
-  
-  userHasAuthenticated = authenticated => {
-    this.setState({ isAuthenticated: authenticated });
+  componentDidMount() {
+    this.props.getCurrentSession()
+    this.props.getCurrentUser()
   }
 
   handleLogout = async event => {
@@ -65,83 +42,19 @@ class App extends Component {
     if (!confirmed) {
       return;
     }
-    await Auth.signOut();
-    this.userHasAuthenticated(false);
-    this.props.history.push("/login");
-  }
-
-  handleAlertDismiss() {
-    this.setState({ alertVisible: false });
-  }
-
-  toggleAlert() {
-    this.setState({
-      showAlert: !this.state.showAlert
-    })
+    this.props.logout()
   }
 
   render() {
     const childProps = {
-      isAuthenticated: this.state.isAuthenticated,
-      userHasAuthenticated: this.userHasAuthenticated,
-      alertVisible: this.alertVisible,
+      isAuthenticated: this.props.authentication.isAuthenticated,
+      alertVisible: this.props.authentication.alertVisible,
+      window: this.props.window
     };
-
-    const headerStyle = { 
-      background: '#fff', 
-      paddingLeft: '16px', 
-      color: '#000', 
-      borderRadius: '0 0 32px 0',
-      border: "1px solid #a0cf67",
-      borderWidth: "0 1px 1px 0"
-    }
-
-    /*const headerStyle = { 
-      background: 'linear-gradient(to right, rgb(22,85,151), #1a9ed9,rgb(159,193,69))', 
-      paddingLeft: '16px', 
-      color: '#fff', 
-      borderRadius: '0 0 32px 0'*/
-          
-    class HeaderBar extends Component {
-      constructor(props){
-        super(props)
-        this.state = {
-          isFocused: false,
-          isHovered: false
-        }
-      }
-
-      toggleHover = () => {
-        this.setState((state) => {return {isHovered: !state.isHovered}})
-      }
-
-      render() {
-        return (
-          <Header 
-              style={headerStyle}
-              >
-            <span style={{float: "right"}}>
-              <Tooltip placement="bottomLeft" title={<span>Need to call us?</span>}>
-                <Button shape="circle" icon="phone" size="large" style={{color: "#a0cf67", background: "white", border: "1px solid #a0cf67", marginRight: "0.5em"}}/>
-              </Tooltip>
-              <Tooltip placement="bottom" title={<span>Have a question?</span>}>
-                <Button shape="circle" icon="question" size="large" style={{color: "#a0cf67", background: "white", border: "1px solid #a0cf67", marginRight: "0.5em"}}/>
-              </Tooltip>
-              <Tooltip placement="bottomRight" title={<span>Tell us about an issue?</span>}>
-                <Button shape="circle" icon="warning" size="large" style={{color: "#a0cf67", background: "white", border: "1px solid #a0cf67"}}/>
-              </Tooltip>
-            </span>
-            <Row>
-              <span style={{fontSize: "1.2em"}}>{"Spend Analysis Tool".toUpperCase()}</span> <span>Making spend analysis fast, easy and accurate.</span>
-            </Row>
-          </Header>
-        )
-      }
-    }
   
     const LayoutContainer = (props) => 
       <Layout style={{ marginLeft: 80, minHeight: '100vh' }}>
-        {<HeaderBar />}
+        <AuthHeader />
         <Content>
           <Routes childProps={childProps} />
         </Content>
@@ -153,7 +66,7 @@ class App extends Component {
         trigger={null}
         collapsible
         collapsed={this.state.collapsed}
-        style={{ background: '#fff', overflow: 'auto', height: '100vh', position: 'fixed', left: 0, zindex: 1000 }}
+        style={{ background: '#fff', overflow: 'auto', height: '100vh', position: 'fixed', left: 0, zindex: 1000, boxShadow: "2px 0px 4px -2px #bbb" }}
         >
         <div style={{padding: "6px 15px"}}>
           <img src="https://image.ibb.co/iiDnGb/Screen_Shot_2018_01_04_at_1_09_50_pm.png" alt="Screen_Shot_2018_01_04_at_1_09_50_pm" height="50" width="50"/>
@@ -169,15 +82,15 @@ class App extends Component {
       </Layout>
 
     const UnauthenticatedView = (props) =>
-      <Layout>
+      <Layout style={{maxWidth: this.props.window.width}}>
         <BackTop />
         <Header style={{position: 'fixed', width:'100%', padding: '0px', background: 'none', zIndex: '500'}}>
-          <TopNav />
+          <TopNav window={this.props.window}/>
         </Header>
         <Content style={{marginTop: 64}}>
-          <Routes childProps={childProps} />
+          <Routes {...childProps} />
         </Content>
-        < FooterComponent />
+        <FooterComponent window={this.props.window} />
       </Layout>
 
     const AuthenticatingView = (props) => 
@@ -187,17 +100,24 @@ class App extends Component {
           />
       </div>
 
-    const UpperAlert = (props) => <Alert onClose={e => {this.toggleAlert()}}type="error" message={this.state.authenticationErrorMessage&&(this.state.authenticationErrorMessage.code+': '+this.state.authenticationErrorMessage.message)} banner closable/>
 
     return (
-      <AppContext.Provider value={this.state}>
-        {this.state.showAlert&&<UpperAlert />}
-        {!this.state.isAuthenticating&&this.state.isAuthenticated&&<AuthenticatedView />}
-        {!this.state.isAuthenticating&&!this.state.isAuthenticated&&<UnauthenticatedView />}
-        {this.state.isAuthenticating&&<AuthenticatingView />}
-      </AppContext.Provider>
+      <GetWindowDimensions>
+          {!this.props.authentication.isAuthenticating&&this.props.authentication.isAuthenticated&&<AuthenticatedView />}
+          {!this.props.authentication.isAuthenticating&&!this.props.authentication.isAuthenticated&&<UnauthenticatedView />}
+          {this.props.authentication.isAuthenticating&&<AuthenticatingView />}
+      </GetWindowDimensions>
     )
   }
 }
 
-export default withRouter(App);
+const mapStateToProps = (state, ownProps) => {
+  return {
+    authentication: state.authentication,
+    window: state.window
+  }
+}
+
+const AppConnect = connect(mapStateToProps, actions)(App)
+
+export default withRouter(AppConnect);

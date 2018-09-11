@@ -12,6 +12,12 @@ export const toggleFullscreen = (force) => {
     }
 }
 
+export const toggleFilterShow = () => {
+    return {
+        type: 'TOGGLE_FILTER_DISPLAY',
+    }
+}
+
 export const fetchDatasetInformation = (datasetId) => {
     return {
         type: 'FETCH_DATASET_INFORMATION',
@@ -34,6 +40,12 @@ export const setDatasetId = (datasetId) => {
 }
 
 // FILTERS
+
+export const clearFilter = (e) => {
+    return {
+        type: 'FILTER_RESET'
+    }
+}
 
 export const filterSelectVendor = (e) => {
     return {
@@ -84,11 +96,27 @@ export const removeFilter = (e) => {
     }
 }
 
-export const fetchDataQuery = (storeLocation, path) => {
+export const fetchDataQuery = (storeLocation, path, filters) => {
     return {
         type: 'FETCH_DATASET_QUERY',
-        meta: {chartKey: storeLocation, path: path},
-        payload: API.get("spat",path)
+        meta: {chartKey: storeLocation, path: path, filters:filters},
+        payload: API.post("spat", path, {
+            body: {filters:filters}
+        })
+    }
+}
+
+export const handleDrillDown = (storeLocation) => {
+    return {
+        type: 'CHART_DRILL_DOWN',
+        payload: storeLocation
+    }
+}
+
+export const handleDrillUp = (storeLocation) => {
+    return {
+        type: 'CHART_DRILL_UP',
+        payload: storeLocation
     }
 }
 

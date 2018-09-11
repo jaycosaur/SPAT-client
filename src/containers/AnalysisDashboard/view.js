@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tabs, Icon, Menu } from 'antd';
+import { Icon, Menu } from 'antd';
 import { connect } from 'react-redux'
 import { handleDashboardChange } from './../../store/actions/dashboardActions'
 import { Route, Switch, Link } from "react-router-dom";
@@ -8,7 +8,6 @@ import Loadable from "react-loadable"
 import DashboardHeader from './DashboardHeader'
 
 import ServerError from "./../../containers/ServerError"
-
 
 const MyLoadingComponent = ({isLoading, error}) => {
   // Handle the loading state

@@ -2,19 +2,24 @@ import React, { Component } from "react";
 
 import { Row, Col, Card, Icon } from 'antd'
 import { resetPassword } from "../../../libs/awsLib";
+import { Auth } from 'aws-amplify'
+import { connect } from 'react-redux'
+import * as actions from './../../../store/actions/authActions'
 
 import ChangePassword from './../components/ChangePassword'
 
-export default class MyProfile extends Component {
+class MyProfile extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       isLoading: false,
       oldPassword: "",
       password: "",
       confirmPassword: "",
     };
+  }
+
+  componentDidMount(){
   }
 
   validateForm() {
@@ -80,3 +85,12 @@ const ContainerCard = (props) =>
   <Card title={props.title} extra={props.extra} style={{marginBottom: 16}}>
     {props.children}
   </Card>
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    userData: state.authentication.userData,
+    isFetchingUserData: state.authentication.isFetchingUserData
+  }
+}
+
+export default connect(mapStateToProps, actions)(MyProfile)

@@ -25,22 +25,6 @@ const sampleMessageJson = [{
     isRead: true,
   }]
 
-const sampleMessagesJson = [{
-    id: "asdfsdaf786234gof078",
-    message: "I'm having difficulty with this thing ...",
-    timestamp: 1519174747,
-    },{
-    id: "asdfsdaf7asdfsdaf8",
-    message: "Here why don't you try to add them first.",
-    timestamp: 1519178347,
-  },{
-    id: "asdsdfgdfgdsfgf0asdf78",
-    message: "Great that worked! Thanks so much.",
-    timestamp: 1519178547,
-    isResolved: true
-  }]
-
-
 export default class InboxContainer extends Component {
   constructor(props) {
     super(props)

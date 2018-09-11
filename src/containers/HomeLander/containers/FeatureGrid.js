@@ -1,10 +1,13 @@
 import React from 'react'
-import { Icon } from 'antd';
+import { Icon, Card } from 'antd';
 
 export default () => {
   return (
-    <div style={{background: "white"}}>
-        <div style={{textAlign: "center", padding: 40, fontWeight: "500"}}><h1>Check out these great features!</h1></div>
+    <div style={{background: "white", padding: "36px 0px"}}>
+        <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", paddingTop: 60, paddingBottom: 60}}>
+            <h1 style={{textAlign: "center", fontWeight: "800", fontSize: '3em'}}>Say goodbye to the Frankenstein spreadsheets.</h1>
+            <h2 style={{textAlign: "center", fontWeight: "400", width: "70%", fontSize: '1.75em'}}>Technology that is smarter, faster, more comprehensive and much much simpler. Implemented in seconds not months.</h2>
+        </div>
         <div style={{width: "100%", display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
             <FeatureItem 
                 icon = "dot-chart" 
@@ -32,15 +35,13 @@ export default () => {
                 subtitle="Some excellent feature 5 subtitle" 
                 body="Completely synergize resource taxing relationships via premier niche markets. Professionally cultivate one-to-one customer service with robust ideas. "/>
         </div>
-
     </div>
   )
 }
 
 const FeatureItem = (props) =>
-    <div style={{margin: 16, width: "40%", minWidth: 300, padding: 20, textAlign: "center"}}>
+    <Card style={{margin: 16, width: "30%", minWidth: 300, padding: 20, textAlign: "center", background: "#a0cf67"}} bodyStyle={{padding: 8, color: "#fff"}}>
         <Icon style={{fontSize: 120, marginBottom: 40}} type={props.icon} />
-        <h4 style={{fontWeight: 600}}>{props.title}</h4>
-        <h5>{props.subtitle}</h5>
+        <h2 style={{color: "#fff"}}>{props.subtitle}</h2>
         <p style={{padding: 20}}>{props.body}</p>
-    </div>
+    </Card>

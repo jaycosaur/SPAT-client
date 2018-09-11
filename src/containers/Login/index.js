@@ -1,32 +1,15 @@
 import React, { Component } from "react";
-import { Form, Icon, Input, Button, Checkbox, Row, message} from 'antd';
+import { Form, Icon, Input, Button, Checkbox, Row } from 'antd';
 import { Link } from 'react-router-dom'
-import { Auth } from "aws-amplify"
 import "./Login.css";
+import * as actions from './../../store/actions/authActions'
 import Particles from 'particlesjs'
+
+import { connect } from 'react-redux'
 
 const FormItem = Form.Item;
 
-export default class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: false,
-    };
-  }
-
-  handleSubmit = async event => {
-    this.setState({ isLoading: true });  
-    try {
-      await Auth.signIn(event.userName, event.password);
-      this.props.userHasAuthenticated(true);
-      //alert("Logged in");
-    } catch (e) {
-      message.error(e.code + ': ' + e.message)
-      this.setState({ isLoading: false });   
-    }
-  }
-
+class Login extends Component {
   componentDidMount(){
     this.particles = Particles.init({
       selector: '.background',
@@ -53,7 +36,7 @@ export default class Login extends Component {
             <img alt="SPAT Icon" src="SPATICON-white.png" height="150" width="150" />
           </div>
           <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", marginBottom: 20}}><h1 style={{color: "white"}}>Login</h1></div>
-          <WrappedNormalLoginForm loading={this.state.isLoading} handleSubmit={this.handleSubmit} />
+          <WrappedNormalLoginForm loading={this.props.isLoading} handleSubmit={this.props.login} />
         </div>
       </div>
     );
@@ -121,3 +104,12 @@ class NormalLoginForm extends React.Component {
 }
 
 const WrappedNormalLoginForm = Form.create()(NormalLoginForm);
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    authentication: state.authentication,
+    isLoading: state.authentication.isLoading
+  }
+}
+
+export default connect(mapStateToProps, actions)(Login)

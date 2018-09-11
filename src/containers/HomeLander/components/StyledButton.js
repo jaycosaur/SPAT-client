@@ -14,12 +14,12 @@ class StyledButton extends PureComponent {
   render() {
 
     const style={
-        borderRadius: "100px",
+        borderRadius: "10px",
         padding: "10px 20px",
         color: "white",
         fontSize: "200%",
         fontWeight: "500",
-        background: "#a0cf67",
+        background: "#54b948",
         border: "2px solid #a0cf67"
     }
     const hoverStyle = {

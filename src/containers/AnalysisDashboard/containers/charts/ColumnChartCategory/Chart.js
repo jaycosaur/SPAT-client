@@ -9,7 +9,10 @@ export default (props) => {
         chart: {
             type: 'column',
             events: {
-                click: e => props.handleDeselect(e)
+                click: e => {
+                    e.preventDefault()
+                    props.handleDeselect(e)
+                }
             }
         },
         legend: {
@@ -35,7 +38,7 @@ export default (props) => {
             fallbackToExportServer: false
         },
         title: {
-            text: 'SPEND OVER MEGACATEGORIES'
+            text: 'Spend Over Categories'
         },
         colors: [
             'rgb(159,193,69)'

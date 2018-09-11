@@ -1,61 +1,16 @@
 import React from 'react'
-import { Col, Card } from 'antd';
+import { Col } from 'antd';
 
 //importing all charts and components
 import ColumnChartCategory from './../containers/charts/ColumnChartCategory/'
+import ColumnChartTopVendors from './../containers/charts/ColumnChartTopVendors/'
 import AreaChartTime from './../containers/charts/AreaChartTime/'
 import DotChartVendor from './../containers/charts/DotChartVendor'
 import TableInvoicePo from './../containers/tables/TableInvoicePo'
 
-import CardContainer from './../components/infocards/CardContainer'
-
 import RowContainer from './../components/layout/RowContainer'
-import FilterContainer from './../components/filters/FilterContainer'
-
 import SummaryQueryCard from './../containers/infocards/SummaryQueryCard'
-
-const inputData2 = [
-    {
-        title: "TOTAL SPEND",
-        value: 15921.34,
-        accounting: true
-    },
-    {
-        title: "# SUPPLIERS",
-        value: 3892,
-        accounting: true
-    },
-    {
-        title: "# TRANSACTIONS",
-        value: 53239,
-        accounting: true
-    },
-    {
-        title: "# PURCHASE ORDERS",
-        value: 23913,
-        accounting: true
-    },
-    {
-        title: "TOTAL SPEND",
-        value: 2125.34,
-        accounting: true
-    },
-    {
-        title: "# SUPPLIERS",
-        value: 3892,
-        accounting: true
-    },
-    {
-        title: "# TRANSACTIONS",
-        value: 53239,
-        accounting: true
-    },
-    {
-        title: "# PURCHASE ORDERS",
-        value: 23913,
-        accounting: true
-    },
-]
+import AltSummaryQueryCard from './../containers/infocards/AltSummaryQueryCard'
 
 export default (props) => 
             <React.Fragment>
@@ -69,18 +24,15 @@ export default (props) =>
                     <AreaChartTime />
                 </RowContainer>
                 <RowContainer key="two-column-mid">
-                    <Col span={12} style={{padding: 0}}>
-                        <CardContainer itemWidth="50%" data={inputData2}/>
+                    <Col key="left" span={12} style={{padding: 0}}>
+                        <AltSummaryQueryCard/>
                     </Col>
-                    <Col span={12} style={{padding: 0}}>
+                    <Col key="right" span={12} style={{padding: 0}}>
                         <DotChartVendor />
                     </Col>
                 </RowContainer>
-                <RowContainer key="filter-container">
-                    <FilterContainer />
-                </RowContainer>
                 <RowContainer key="top20-suppliers">
-                    <ColumnChartCategory />
+                    <ColumnChartTopVendors />
                 </RowContainer>
                 <RowContainer key="supplier-summary-table">
                     <TableInvoicePo />

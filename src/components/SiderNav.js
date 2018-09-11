@@ -12,7 +12,7 @@ const menuList = [
   ]
 
 export default props =>
-  <Menu>
+  <Menu style={{borderRightWidth: 0 }}>
     <Menu.Divider/>
     {
       menuList.map(item =>

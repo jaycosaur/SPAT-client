@@ -1,30 +1,61 @@
 
 import React from "react";
-import { Popover, Avatar, Switch } from 'antd';
+import { Avatar } from 'antd';
 import { connect } from 'react-redux'
+import { toggleFilterShow, clearFilter } from './../../store/actions/dashboardActions'
+import FilterClickComponent from './FilterClickComponent'
 
-const FilterPopover = (props) => Object.keys(props.filters).filter(key => props.filters[key].active).length===0
-    ?
-    <Avatar size="large" icon="filter" style={{ backgroundColor: 'gray', position: "fixed", zIndex: 100, right: 0, top: 0, marginRight: 10, marginTop: 10 }}/>
-    :
-    <Popover content={<FilterContent filters={props.filters} closeHandler={null&&props.actions.categoryDeselect}/>} placement="leftTop">
-        <Avatar size="large" icon="filter" style={{ border: "solid 1px #fff", backgroundColor: '#a0cf67', position: "fixed", zIndex: 100, right: 0, top: 0, marginRight: 10, marginTop: 10 }}/>
-    </Popover>
-
-const FilterContent = (props) => (
-    <div style={{width: 140}}>
-        {Object.keys(props.filters).map(filterKey => (
-            <div>
-                {filterKey} {props.filters[filterKey].items&&props.filters[filterKey].items.length>0&&`(${props.filters[filterKey].items.length} active)`} : <Switch checked={props.filters[filterKey].active}/>
-            </div>
-        ))}
+const FilterPopover = (props) => (
+    <div style={{
+        position: "fixed", 
+                zIndex: 100, 
+                right: 0, 
+                top: 0, 
+                marginRight: 10, 
+                marginTop: 10
+        }}>
+        <FilterClickComponent />
+        <Avatar 
+            onClick={props.clearFilter} 
+            size="large" 
+            icon="delete"
+            style={{
+                marginLeft: 8,
+                cursor: Object.keys(props.filters).filter(key => props.filters[key].active).length===0?"not-allowed":"pointer", 
+                border: "solid 1px #fff", 
+                backgroundColor:  Object.keys(props.filters).filter(key => props.filters[key].active).length===0?"gray":'red', 
+                 }}/>
+        <Avatar 
+            onClick={props.toggleShow} 
+            size="large" 
+            icon={props.showFilter?"up":"filter"} 
+            style={{
+                marginLeft: 8,
+                cursor: "pointer", 
+                border: "solid 1px #fff", 
+                backgroundColor:  Object.keys(props.filters).filter(key => props.filters[key].active).length===0?"gray":'#a0cf67', 
+                 }}/>
     </div>
 )
 
-export default connect((store) => {
-    return {
-        filters: store.dashboard.filters
-    }
-    })(FilterPopover)
+    
+    
 
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        toggleShow: (e) => {
+            dispatch(toggleFilterShow())
+        },
+        clearFilter: (e) => dispatch(clearFilter())
+    }
+}
+
+const mapStateToProps = (state, ownProps) => {
+    return {
+        filters: state.dashboard.filters,
+        showFilter: state.dashboard.filterShow
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FilterPopover)
 

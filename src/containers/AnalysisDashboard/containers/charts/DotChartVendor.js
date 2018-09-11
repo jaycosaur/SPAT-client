@@ -13,7 +13,9 @@ const chartKey = "organisationDotChart"
 
 const wrangler = (data) => data.map(item => {
     return {
-        ...item,
+        totalInvoices: parseFloat(item.totalInvoices),
+        numberInvoices: parseFloat(item.numberInvoices),
+        organisation: item.organisation,
         isOutlier: Math.random() > 0.9
     }
 })
@@ -35,6 +37,18 @@ class ChartContainer extends React.Component {
 
     componentDidMount() {
         this.props.fetchDataQuery()
+    }
+
+    shouldComponentUpdate(nextProps) {
+        const lastFetch = this.props.data&&this.props.data.fetchTime
+        const newFetch = nextProps.data&&nextProps.data.fetchTime
+        if((this.props.data==null&&nextProps.data!=null)
+            ||(lastFetch!==newFetch&&newFetch!=null)){
+            return true
+        } else {
+            return false
+        }
+
     }
 
     render() {
@@ -62,7 +76,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(filterDeselectVendor(e))
         },
         fetchDataQuery: () => {
-            dispatch(fetchDataQuery(chartKey, "/query/1/organisation"))
+            dispatch(fetchDataQuery(chartKey, "/data/ds-12345/query/vendorall"))
         }
     }
 }

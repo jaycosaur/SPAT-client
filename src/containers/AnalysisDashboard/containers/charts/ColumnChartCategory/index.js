@@ -5,16 +5,16 @@ import Chart from './Chart'
 import { Card } from 'antd'
 import CardGrid from './../../../components/layout/CardGrid'
 import { connect } from 'react-redux'
-import { filterSelectCategory, filterDeselectCategory, fetchDataQuery } from './../../../../../store/actions/dashboardActions'
+import { filterSelectCategory, filterDeselectCategory, fetchDataQuery, handleDrillDown, handleDrillUp } from './../../../../../store/actions/dashboardActions'
 
-const chartKey = "categorylevel1query"
+const chartKey = "categorylevelquery"
 
 
 const wrangler = (data) => {
     if (data) {
         let chartData = data
         chartData = chartData.filter(item => item['Total Spend']>0).sort((a,b) => b['Total Spend']-a['Total Spend'])
-        let categories = chartData.map(item => item.catlevel1)
+        let categories = chartData.map(item => item[`catlevel1`])
         let series = chartData.map(item => parseFloat(item['Total Spend']))
         return ({
             categories,
@@ -41,7 +41,20 @@ class ChartContainer extends React.Component {
     }
 
     componentDidMount() {
-        this.props.fetchDataQuery()
+        this.props.fetchDataQuery(this.props.filters)
+    }
+
+    shouldComponentUpdate(nextProps) {
+        const lastFetch = this.props.data&&this.props.data.fetchTime
+        const newFetch = nextProps.data&&nextProps.data.fetchTime
+        if((this.props.data==null&&nextProps.data!=null)
+            ||(lastFetch !== newFetch&&newFetch!=null)||(this.props.data.isLoading ==! nextProps.data.isLoading)
+        )
+            {
+            return true
+        } else {
+            return false
+        }
     }
 
     render() {
@@ -50,7 +63,14 @@ class ChartContainer extends React.Component {
                 key="chartcontainerbarspendcategories" 
                 loading={!this.props.data.hasData&&!this.props.data.isError} bodyStyle={{padding: 0}}
             >
-                <LoaderIcon onClick={this.props.fetchDataQuery} isFetching={this.props.data.isLoading} isError={this.props.data.isError} />
+                <LoaderIcon 
+                    drillDown={this.props.chartDrillDown} 
+                    drillUp={this.props.chartDrillUp} 
+                    drillLevel={this.props.data.drillLevel}
+                    onClick={e => this.props.fetchDataQuery(this.props.filters)} 
+                    isFetching={this.props.data.isLoading} 
+                    isError={this.props.data.isError} 
+                    />
                 {!this.props.data.isError?
                     <CardGrid render={<Chart {...this.props} data={this.props.data.hasData&&this.props.selector(this.props.data.data.data)}/>}/>
                     :
@@ -69,16 +89,20 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         handleDeselect: (e) => {
             dispatch(filterDeselectCategory(e))
         },
-        fetchDataQuery: () => {
-            dispatch(fetchDataQuery(chartKey, "/data/ds-12345/query/categorylevel1query"))
-        }
+        fetchDataQuery: (filters) => {
+            dispatch(fetchDataQuery(chartKey, `/data/ds-12345/query/categorylevel1query`, filters))
+        },
+        chartDrillDown: () => dispatch(handleDrillDown(chartKey)),
+        chartDrillUp: () => dispatch(handleDrillUp(chartKey))
     }
 }
 
 const mapStateToProps = (state, ownProps) => {
     return {
         data: state.dashboard.dataQueries[chartKey],
-        selector: (data) => wrangler(data)
+        selector: (data) => wrangler(data),
+        filters: state.dashboard.filters,
+        drillLevel: state.dashboard.dataQueries[chartKey]&&state.dashboard.dataQueries[chartKey].drillLevel
     }
 }
 

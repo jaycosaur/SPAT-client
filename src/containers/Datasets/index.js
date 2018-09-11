@@ -10,10 +10,9 @@ import { invokeApig, s3Upload } from "../../libs/awsLib";
 export default class Datasets extends Component {
   constructor(props) {
     super(props);
-
     this.file = null;
-
     this.state = {
+      timer: null,
       isLoading: null,
       isDeleting: null,
       dataset: null,
@@ -24,12 +23,15 @@ export default class Datasets extends Component {
       processState: "",
       isTouched: null,
       isSaved: null,
+      counter: 0,
+      eventArray: []
     };
   }
 
   async componentDidMount() {
     try {
       const results = await invokeApig({ path: `/datasets/${this.props.match.params.id}` });
+      let timer = setInterval(this.tick, 1000)
       this.setState({
         dataset: results,
         title: results.title,
@@ -37,10 +39,60 @@ export default class Datasets extends Component {
         id: results.datasetId,
         processState: results.state,
         createdAt: results.createdAt,
+        timer: timer
       });
     } catch (e) {
       alert(e);
     }
+  }
+
+  tick = () => {
+    let count = this.state.counter
+    let processState = null
+    let eventArray = this.state.eventArray
+    let tf = 1
+    if(count < 5*tf) {
+      processState = "Pending Processing"
+    } else if (count < 160*tf) {
+      processState = "Processing"
+    } else {
+      processState = "Processing Complete"
+    }
+
+    if(count === 5*tf) {
+      eventArray.push("Dataset has been recieved")
+    } else if (count === 6*tf) {
+      eventArray.push("Checking dataset format")
+    } else if (count === 9*tf) {
+      eventArray.push("Dataset is in acceptable format ...")
+    } else if (count === 10*tf) {
+      eventArray.push("Checking filesize and data quality ...")
+    } else if (count === 15*tf) {
+      eventArray.push("Filesize is below threshold with no errors")
+    } else if (count === 16*tf) {
+      eventArray.push("Preparing dataset for classification")
+    } else if (count === 24*tf) {
+      eventArray.push("Classifying dataset ...")
+    } else if (count === 130*tf) {
+      eventArray.push("Classification complete")
+    } else if (count === 135*tf) {
+      eventArray.push("Preparing for analysis")
+    } else if (count === 160*tf) {
+      eventArray.push("Dataset is ready for analysis.")
+    }
+    if (this.state.processState === "Processing Complete"){
+      processState = "Processing Complete"
+      eventArray = ["Dataset is ready for analysis."]
+    }
+
+    this.setState({
+      counter: this.state.counter + 1,
+      processState: processState,
+      eventArray
+    });
+  }
+
+  componentWillUnmount() {
   }
 
   validateForm() {
@@ -183,19 +235,23 @@ export default class Datasets extends Component {
         <Spin indicator={<Icon type='loading' style={{fontSize: '100px', color: 'rgb(159,193,69)'}}/>} />
       </div>
 
-    const DatasetTimeline = (props) => 
-      <Timeline pending="Dataset is processing ...">
-        <Timeline.Item color="green">Dataset has been recieved</Timeline.Item>
-        <Timeline.Item color="green">Dataset is in acceptable format</Timeline.Item>
-        <Timeline.Item color="green">Dataset has been checked for size</Timeline.Item>
-      </Timeline>
+    const DatasetTimeline = (props) => {
+      
+
+      return (
+        <Timeline>
+          {props.events.map((event, i) => <Timeline.Item color={i<props.events.length?"green":"gold"}>{event}</Timeline.Item>)}
+        </Timeline>
+      )
+    }
+      
 
     const isProcessingComplete = (this.state.processState === "Processing Complete")
 
 
     const InstanceStateActions = isProcessingComplete&&[
-      <span><Icon type="download" /> Download</span>, 
-      <a href={'https://app.powerbi.com/view?r=eyJrIjoiZWQ0OGZlNzEtZTczZi00ZTY1LWIxZjItOGJiNzI3ZDk2MDZkIiwidCI6IjBmYmEyYjI1LTdkZmYtNDZiNi1hY2U1LTQ3OWFlYzNmMjY0NyJ9'}><Icon type="dot-chart"/> Dashboard</a>]
+      <span><a rel="noopener noreferrer" href="https://s3-ap-southeast-2.amazonaws.com/spat-datalake-processed/SPAT-DataTemplateFilledv1-classified.xlsx" target="_blank"><Icon type="download" /> Download Dataset</a></span>, 
+      <a rel="noopener noreferrer" href={'https://app.powerbi.com/view?r=eyJrIjoiZWQ0OGZlNzEtZTczZi00ZTY1LWIxZjItOGJiNzI3ZDk2MDZkIiwidCI6IjBmYmEyYjI1LTdkZmYtNDZiNi1hY2U1LTQ3OWFlYzNmMjY0NyJ9'}><Icon type="dot-chart"/> Dashboard</a>]
 
 
     const InstanceState = (props) =>
@@ -212,7 +268,7 @@ export default class Datasets extends Component {
           </p>
         </Card>
         <Divider>Timeline</Divider>
-        <DatasetTimeline />
+        <DatasetTimeline events={this.state.eventArray}/>
       </Card>
 
     const UnsavedAlert = (props) =>

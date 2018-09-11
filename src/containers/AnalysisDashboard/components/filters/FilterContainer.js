@@ -4,17 +4,17 @@ import FilterSelect from './FilterSelect'
 
 export default (props) =>
     <Card 
-        bodyStyle={{padding: 0, display: "flex", flexDirection: "row", flexWrap: "wrap"}}
+        style={{width: "100%"}}
+        bodyStyle={{padding: 0}}
+        bordered={false}
         >
         {[
             <FilterSelect type={"category"}/>,
             <FilterSelect type={"time"}/>,
             <FilterSelect type={"account"}/>,
-            <FilterSelect type={"vendor"}/>,
-            <FilterSelect />,
-            <FilterSelect />,
+            <FilterSelect type={"vendor"}/>
         ].map((item, i )=>
-            <Card.Grid key={i} style={{ width: '50%'}}>
+            <Card.Grid key={i} style={{ width: '25%'}}>
                 <FilterItem render={item} />
             </Card.Grid>
         )}

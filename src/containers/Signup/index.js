@@ -2,13 +2,9 @@ import React, { Component } from "react";
 import { Form, Icon, Input, Button, Checkbox, Row, Anchor, Card, Col } from 'antd';
 import { Link } from 'react-router-dom'
 import Recaptcha from 'react-recaptcha'
-import "./Signup.css";
-import {
-  AuthenticationDetails,
-  CognitoUserPool,
-  CognitoUserAttribute
-} from "amazon-cognito-identity-js";
-import config from "../../config";
+import "./Signup.css"
+import { connect } from 'react-redux'
+import * as actionCreator from './../../store/actions/unauthActions'
 
 import tierData from './tierData'
 
@@ -235,170 +231,21 @@ const WrappedSignupInformationForm = Form.create()(SignupInformationForm);
 const WrappedSignupPasswordForm = Form.create()(SignupPasswordForm);
 const WrappedSignupConfirmationForm = Form.create()(SignupConfirmationForm);
 
+const SignupSuccessfulPage = (props) => (
+  <div style={{margin: "0 auto"}}>
+    <div style={{display: "flex", justifyContent: "center", width: "100%"}}>
+      <Link to="/login">
+        <Button ghost size='large' className="login-form-button">
+          Go to Login
+        </Button>
+      </Link>
+    </div>
+  </div>
+)
 
-
-export default class Signup extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: false,
-      givenName: "",
-      familyName: "",
-      phoneNumber: "",
-      organisation: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      confirmationCode: "",
-      newUser: null,
-      informationForm: {},
-      passwordForm: {},
-      page: "information"
-    };
-  }
-
-  userSignup = async () => {
-    this.setState({ isLoading: true });
-    try {
-      const newUser = await this.signup(
-        this.state.informationForm.givenName,
-        this.state.informationForm.familyName,
-        this.state.informationForm.phoneNumber,
-        this.state.informationForm.organisation,
-        this.state.informationForm.email, 
-        this.state.passwordForm.password);
-      this.setState({
-        newUser: newUser
-      })
-    } catch (e) {
-      alert(e);
-    }
-    this.setState({ isLoading: false });
-  }
-
-  signup(givenName, familyName, phoneNumber, organisation, email, password) {
-    const userPool = new CognitoUserPool({
-      UserPoolId: config.cognito.USER_POOL_ID,
-      ClientId: config.cognito.APP_CLIENT_ID
-    });
-    /*
-    var dataGivenName = {
-      Name : 'given_name',
-      Value : givenName
-    };
-    var dataFamilyName = {
-      Name : 'family_name',
-      Value : familyName
-    };
-    var dataPhoneNumber = {
-      Name : 'phone_number',
-      Value : phoneNumber
-    };
-    var dataOrganisation = {
-      Name : 'organisation',
-      Value : organisation
-    };
-
-    var attributeGivenName = new CognitoUserAttribute(dataGivenName);
-    var attributeFamilyName = new CognitoUserAttribute(dataFamilyName);
-    var attributePhoneNumber = new CognitoUserAttribute(dataPhoneNumber);
-    var attributeOrganisation = new CognitoUserAttribute(dataOrganisation);
-
-    var attributeList = [attributeGivenName, attributeFamilyName, attributePhoneNumber, attributeOrganisation];
-    */
-    return new Promise((resolve, reject) =>
-      userPool.signUp(email, password, [], null, (err, result) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(result.user);
-      })
-    );
-  }
-  
-  handleInformationSubmit = (event) => {
-    this.setState({ 
-      informationForm: event,
-      page: "password"
-    });
-  }
-
-  handlePasswordSubmit = (event) => {
-    this.setState({ 
-      passwordForm: event,
-      page: "confirm"
-    });
-  }
-
-  handleConfirmSubmit = (event) => {
-    this.setState({ 
-      confirmForm: event,
-    });
-  }
-
-  confirmEmail = async event => {
-    event.preventDefault();
-    this.setState({ isLoading: true });
-    try {
-      await this.confirm(this.state.newUser, this.state.confirmForm.confirmationCode);
-      await this.authenticate(
-        this.state.newUser,
-        this.state.informationForm.email,
-        this.state.passwordForm.password
-      );
-      this.props.userHasAuthenticated(true);
-      this.props.history.push("/");
-    } catch (e) {
-      alert(e);
-      this.setState({ isLoading: false });
-    }
-  }
-
-  confirm(user, confirmationCode) {
-    return new Promise((resolve, reject) =>
-      user.confirmRegistration(confirmationCode, true, function(err, result) {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(result);
-      })
-    );
-  }
-  
-  authenticate(user, email, password) {
-    const authenticationData = {
-      Username: email,
-      Password: password
-    };
-    const authenticationDetails = new AuthenticationDetails(authenticationData);
-  
-    return new Promise((resolve, reject) =>
-      user.authenticateUser(authenticationDetails, {
-        onSuccess: result => resolve(),
-        onFailure: err => reject(err)
-      })
-    );
-  }
-
-  planData(keyword){
-    switch(keyword){
-      case "standard":
-        return tierData[0]
-      case "premium":
-        return tierData[1]
-      case "tailored":
-        return tierData[2]
-      default:
-        return tierData[0]
-      }
-  }
-
+class Signup extends Component {
   render() {
-    const planType = this.props.match.params.plan
-
-    const tierDataSelected = this.planData(planType)
+    const tierDataSelected = tierData[this.props.selectedPackage-1]
 
     const SignupPageContainer = (props) => (
       <div className="Signup" style={{paddingBottom: 20, minHeight: "100vh"}}>
@@ -417,7 +264,7 @@ export default class Signup extends Component {
                 <h4 style={{margin: 0}}>{tierDataSelected.subtitle}</h4>
               </div>
               <div style={{display: "flex", justifyContent: "space-between", alignItems:"center", flexDirection: "column"}}>
-                <Link to="/pricing/choose-a-plane"><Button ghost size="large" type="primary" shape="circle" icon="wallet" /></Link>
+                <Link to="/pricing/choose-a-plan"><Button ghost size="large" type="primary" shape="circle" icon="wallet" /></Link>
                 Change Plan
               </div>
             </div>
@@ -430,19 +277,33 @@ export default class Signup extends Component {
         {props.render}
       </div>)
 
-    switch (this.state.page) {
+    switch (this.props.signupPage) {
       case "information":
-        return <SignupPageContainer pageTitle="Signup - Information" render={<WrappedSignupInformationForm loading={this.state.isLoading} handleSubmit={this.handleInformationSubmit}/>}/>
+        return <SignupPageContainer pageTitle="Signup - Information" render={<WrappedSignupInformationForm handleSubmit={this.props.handleInformationSubmit}/>}/>
       case "password":
-        return <SignupPageContainer pageTitle="Signup - Password" render={<WrappedSignupPasswordForm loading={this.state.isLoading} handleSubmit={this.handlePasswordSubmit}/>}/>
+        return <SignupPageContainer pageTitle="Signup - Password" render={<WrappedSignupPasswordForm loading={this.props.signupSubmitLoading} handleSubmit={e => this.props.handlePasswordSubmit(e, this.props.signupInformation, this.props.selectedPackage)}/>}/>
       case "confirm":
-        return <SignupPageContainer pageTitle="Signup- Confirm Email " render={<WrappedSignupConfirmationForm loading={this.state.isLoading} handleSubmit={this.handleConfirmSubmit}/>}/>
+        return <SignupPageContainer pageTitle="Signup - Confirm Email" render={<WrappedSignupConfirmationForm loading={this.props.signupConfirmLoading} handleSubmit={e => this.props.handleConfirmSubmit(e, this.props.signupInformation)}/>}/>
+      case "success":
+        return <SignupPageContainer pageTitle="Signup Successful" render={<SignupSuccessfulPage />}/>
       default:
-        return <SignupPageContainer pageTitle="Signup - Information" render={<WrappedSignupInformationForm loading={this.state.isLoading} handleSubmit={this.handleInformationSubmit}/>}/>
+        return <SignupPageContainer pageTitle="Signup - Information" render={<WrappedSignupInformationForm handleSubmit={this.props.handleInformationSubmit}/>}/>
     }
   }
 }
 
+const mapStateToProps = (state, ownProps) => {
+  return {
+    selectedPackage: state.unauth.selectedPackage,
+    signupPage: state.unauth.signupPage,
+    signupLoading: state.unauth.signupLoading,
+    signupInformation: state.unauth.signupInformationForm,
+    signupSubmitLoading: state.unauth.signupSubmitLoading,
+    signupConfirmLoading: state.unauth.signupConfirmLoading,
+    signupConfirmSuccess: state.unauth.signupConfirmSuccess
+  }
+}
 
+export default connect(mapStateToProps, actionCreator)(Signup)
 
 

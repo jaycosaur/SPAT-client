@@ -31,6 +31,18 @@ class ChartContainer extends React.Component {
         this.props.fetchDataQuery()
     }
 
+    shouldComponentUpdate(nextProps) {
+        const lastFetch = this.props.data&&this.props.data.fetchTime
+        const newFetch = nextProps.data&&nextProps.data.fetchTime
+        if((this.props.data==null&&nextProps.data!=null)
+            ||(lastFetch !== newFetch&&newFetch!=null)){
+            return true
+        } else {
+            return false
+        }
+
+    }
+
     render() {
         return (
             this.props.data?<Card 

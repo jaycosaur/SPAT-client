@@ -13,7 +13,6 @@ import { browserHistory } from 'react-router'
 import store from './store/store'
 import { Provider } from "react-redux"
 
-
 syncHistoryWithStore(browserHistory, store)
 //const history = syncHistoryWithStore(browserHistory, store)
 
@@ -46,7 +45,7 @@ ReactDOM.render(
     <Router onUpdate={() => window.scrollTo(0, 0)}>
       <App />
     </Router>
-    </Provider>,
+  </Provider>,
   document.getElementById("root")
 );
 registerServiceWorker();
